@@ -1,8 +1,0 @@
----
-title: "Welcome"
-author: "Reinhold Koch"
-date: "2017-June-25"
-output: html_document
----
-
-Initialisation of web site.

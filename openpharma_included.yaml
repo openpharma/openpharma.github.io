@@ -1,0 +1,54 @@
+openpharma_exclude:
+  - tester
+  - openpharma_log
+  - visR-docs
+  - openpharma.github.io
+  - BBS-causality-training
+repos:
+  atorus-research:
+    - Tplyr
+    - xportr
+    - pharmaRTF
+    - metacore
+  Merck:
+    - pkglite
+  nlmixrdevelopment:
+    - nlmixr
+  Novartis:
+    - peax
+    - pisces
+    - xgxr
+  pharmaR:
+    - riskmetric
+  Roche:
+    - rtables
+    - respectables
+    - ggtips
+    - Global-HTA-Evidence-Open
+    - crmPack
+tags:
+  lang:
+    r:
+      - crmPack, CTP
+      - facetsr
+      - ggtips, Global-HTA-Evidence-Open, GithubMetrics
+      - pkglite, pharmaRTF, metacore, nlmixr 
+      - respectables, riskmetric, rtables, RDO
+      - staged.dependencies, simaerep, syntrial
+      - Tplyr, visR
+      - xportr, xgxr
+    python:
+      - peax, pisces, org-github-metadata
+  type:
+    filing-tools:
+      - pharmaRTF
+      - metacore
+      - pkglite
+      - riskmetric
+      - Tplyr
+      - xportr
+    tlg:
+      - facetsr, ggtips, 
+      - rtables
+      - Tplyr
+      - visR

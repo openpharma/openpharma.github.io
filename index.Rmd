@@ -1,0 +1,453 @@
+---
+title: "github.com/openpharma"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: 
+      version: 4
+      bootswatch: minty
+    orientation: rows
+    social: menu
+    source_code: embed
+    navbar:
+      - { title: "Github", href: "https://github.com/openpharma/", align: right, icon: github}
+---
+
+```{r, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+
+library(dplyr)
+library(lubridate)
+library(glue)
+library(tidyr)
+library(fontawesome) # devtools::install_github("rstudio/fontawesome")
+
+
+
+thematic::thematic_rmd(
+  font = "auto",
+  # To get the dark bg on the geom_raster()
+  sequential = thematic::sequential_gradient(fg_low = FALSE, fg_weight = 0, bg_weight = 1)
+)
+theme_set(theme_bw(base_size = 20))
+```
+
+```{r getdata}
+library(pins)
+  pins::board_register_github(
+    repo = "openpharma/openpharma_log", branch = "main"
+    )
+  
+  commits <- pin_get("all-commits", board = "github")
+  contributors <- pin_get("all-contributors", board = "github")
+  repos <- pin_get("all-repos", board = "github", cache = FALSE)
+  issues <- pin_get("all-issues", board = "github", cache = FALSE)
+  tags <- pin_get("all-tags", board = "github", cache = FALSE)
+```
+
+```{r prepdata}
+repos <- repos %>%
+  mutate(
+    language = case_when(
+      repo %in% tags$r ~ as.character(fa("r-project", fill = "steelblue")),
+      repo %in% tags$python ~ as.character(fa("python", fill = "goldenrod"))
+    )
+  )
+```
+
+Organization
+===================================== 
+
+Value Boxes {data-width=200}
+-------------------------------------
+
+### Primary
+
+```{r}
+valueBox(n_distinct(repos$repo), caption = "Total repos", icon = "fa-github")
+```
+
+### Commits
+
+```{r}
+valueBox(nrow(commits), caption = "Commits", color = "success", icon = "fa-code-branch")
+```
+
+### People
+
+```{r}
+valueBox(
+  n_distinct(contributors$author), 
+  caption = "People", color = "success", icon = "fa-users")
+```
+
+### Issues
+
+```{r}
+valueBox(
+  issues %>% filter(state == "open") %>% nrow(), 
+  caption = "Open Issues", color = "warning", icon = "fa-question")
+```
+
+### Companies
+
+```{r}
+valueBox(
+  glue("~{n_distinct(contributors$company)}"), 
+  caption = "Unique employers", color = "success", icon = "fa-building")
+```
+
+Value Boxes {data-width=200}
+-------------------------------------
+
+
+### 
+
+```{r}
+lookback <- 30*3
+lookback_char <- "3 months"
+
+valueBox(
+  commits %>%
+    filter(date > Sys.Date() - lookback) %>%
+    pull(full_name) %>% n_distinct(),
+  caption = glue("Repos active | Last {lookback_char}"), 
+  color = "info", icon = "fa-chart-line"
+  )
+```
+
+### 
+
+```{r}
+valueBox(
+  commits %>%
+    filter(date > Sys.Date() - lookback) %>%
+    nrow(),
+  caption = glue("Commits | Last {lookback_char}"),
+  color = "info", icon = "glyphicon-time")
+```
+
+### 
+
+```{r}
+valueBox(
+  commits %>%
+    filter(date > Sys.Date() - lookback) %>%
+    pull(author) %>% n_distinct(),
+  caption = glue("People active | Last {lookback_char}"), 
+  color = "info", icon = "glyphicon-time")
+```
+
+### 
+
+```{r}
+valueBox(
+  length(tags$python), 
+  caption = "Python libraries", color = "info",
+  icon = "fab fa-python"
+)
+```
+
+### 
+
+```{r}
+valueBox(
+  length(tags$r), 
+  caption = "R packages", color = "info",
+  icon = "fab fa-r-project"
+)
+```
+
+    
+Tables {.tabset}
+-------------------------------------
+
+### Repositories
+    
+```{r}
+hlp_repo_details <- function(x){
+  DT::datatable(
+      x %>%
+          mutate(
+            `Last updated` = as.Date(updated_at),
+            Repo = glue(
+              '<a href="https://github.com/{full_name}">{full_name}</a>'
+              )
+            ) %>%
+          arrange(desc(`Last updated`)) %>%
+          select(
+              Repo,
+              Description = description,
+              `Type` = language,
+              `Last updated`
+          ), 
+      rownames = FALSE,
+      escape = FALSE,
+      fillContainer = TRUE)  
+}
+
+hlp_repo_details(repos)
+```
+
+### People
+    
+```{r}
+DT::datatable(
+  contributors %>%
+    left_join(
+      commits %>%
+        group_by(author) %>%
+        summarise(
+          contributed_to = n_distinct(full_name),
+          commits = n()
+        ),
+      by = "author"
+    ) %>%
+    mutate(
+      last_active = Sys.Date() - last_active,
+      contributor = glue(
+        '<img src="{avatar}" alt="" height="30" width = "30"> {name} (<a href="https://github.com/{author}">{author}</a>)'
+        ),
+      Blog = case_when(
+        blog == "" ~ "",
+        TRUE ~ as.character(glue('<a href="{blog}">link</a>'))
+        ),
+      Name = glue("{name} ({author})")
+      ) %>%
+    arrange(last_active, desc(contributed_to), desc(commits)) %>%
+    select(
+      `Name (GH handle)` = contributor,
+      Repos = contributed_to,
+      `Commits` = commits,
+      `Days since active` = last_active,
+      Company = company,
+      Location = location,
+      Blog
+      ) , 
+    escape = FALSE,
+    rownames = FALSE,
+    fillContainer = TRUE)
+```
+### Health
+    
+```{r}
+# kaplan mier estimate?
+
+
+repos %>%
+  mutate(
+    days_since_update = as.numeric(Sys.Date() - as.Date(updated_at))
+  ) %>%
+  select(full_name, days_since_update) %>%
+  left_join(
+    # time current open
+    issues %>%
+      group_by(full_name) %>%
+      filter(state == "open") %>%
+      summarise(
+        open_issues = n(),
+        median_age_open_issue = median(days_open),
+        median_inactivity_open_issue = median(days_no_activity)
+      ),
+    by = "full_name"
+  ) %>%
+  left_join(
+    # time to close
+    issues %>%
+      group_by(full_name) %>%
+      filter(state == "closed") %>%
+      summarise(
+        closed_issues = n(),
+        median_timeto_close = median(days_open)
+      )  ,
+    by = "full_name"  
+  ) %>%
+  left_join(
+    # increase in commits?
+    commits %>%
+      group_by(full_name) %>%
+      mutate(
+        date_numeric = as.numeric(date),
+        midpoint = quantile(date_numeric, 0.5),
+        firsthalf = ifelse(date_numeric >= midpoint,FALSE,TRUE)
+      ) %>%
+      summarise(
+        commits = n(),
+        secondhalf = sum(ifelse(!firsthalf,1,0)),
+        firsthalf = sum(ifelse(firsthalf,1,0))
+      ) %>%
+      mutate(
+        abs = secondhalf - firsthalf
+      ) %>%
+      select(
+        full_name, abs_commits = abs,commits
+      )   ,
+    by = "full_name" 
+  ) %>%
+  left_join(
+    # increase in people?
+    commits %>%
+      group_by(full_name) %>%
+      summarise(
+        authors_ever = n_distinct(author)
+      ),
+    by = "full_name"
+  ) %>%
+  left_join(
+    # increase in people?
+    commits %>%
+      group_by(full_name) %>%
+      mutate(
+        date_numeric = as.numeric(date),
+        midpoint = quantile(date_numeric, 0.5),
+        timing = ifelse(date_numeric >= midpoint,"firsthalf","secondhalf")
+      ) %>%
+      group_by(full_name,timing) %>%
+      summarise(
+        active_people = n_distinct(author)
+      ) %>% ungroup %>%
+      pivot_wider(
+        names_from = timing, values_from = active_people, values_fill = 0
+      ) %>%
+      mutate(
+        ratio = secondhalf/firsthalf,
+        abs_people = secondhalf-firsthalf,
+        percentage_people = round(100*ratio),
+        # if one commit set to 0
+        percentage_people = ifelse(percentage_people == Inf,0,percentage_people)
+      ) %>%
+      select(full_name,abs_people),
+    by = "full_name"
+  ) %>%
+  # Score
+  mutate(
+    score = ifelse(days_since_update < 30*6,1,0),
+    score = case_when(
+      is.na(sum(open_issues,closed_issues, na.rm = TRUE)) ~ score,
+      TRUE ~ score + 1
+    ),
+    score = case_when(
+      commits < 25 ~ score,
+      TRUE ~ score + 1
+    ),
+    score = case_when(
+      authors_ever < 5 ~ score,
+      TRUE ~ score + 1
+    ),
+    score = case_when(
+      is.na(median_age_open_issue) ~ score,
+      median_age_open_issue > 30*6 ~ score,
+      TRUE ~ score + 1
+    ),
+    score = case_when(
+      is.na(median_inactivity_open_issue) ~ score,
+      median_inactivity_open_issue > 30*3 ~ score,
+      TRUE ~ score + 1
+    ),
+    score = case_when(
+      is.na(open_issues) | is.na(closed_issues) ~ score,
+      open_issues > closed_issues ~ score,
+      TRUE ~ score + 1
+    ),
+    score = case_when(
+      is.na(abs_commits)  ~ score,
+      abs_commits < 0 ~ score,
+      TRUE ~ score + 1
+    ),
+    score = case_when(
+      is.na(abs_people)  ~ score,
+      abs_people < 0 ~ score,
+      TRUE ~ score + 1
+    ),
+    Health = round(100*score/max(score)),
+    
+    Repo = glue(
+      '<a href="https://github.com/{full_name}">{full_name}</a>'
+      )
+  ) %>%
+  # tidy title
+  select(
+    Repo,
+    Health,
+    Commits = commits,
+    Contributors = authors_ever,
+    `Days repo inactive` = days_since_update,
+    `Median days open for current issues` = median_age_open_issue,
+    `Median days without comments on open issues` = median_inactivity_open_issue,
+    `Median days to close issue` = median_timeto_close,
+    `Change in frequency of commits` = abs_commits,
+    `Change in active contributors` = abs_people
+  ) %>%
+  arrange(
+    desc(Health)
+  ) %>%
+  # table it
+  DT::datatable(
+    escape = FALSE,
+    rownames = FALSE,
+    fillContainer = TRUE
+    )
+```
+
+> For details  on the metrics, please see XXXXXX
+
+Filing tools {data-navmenu="Categories"}
+=====================================  
+
+blah 
+-------------------------------------
+   
+### 
+
+```{r}
+hlp_repo_details(
+  repos %>% filter(repo %in% tags$filing)
+)
+```  
+
+Tables, listings, graphs {data-navmenu="Categories"}
+=====================================  
+
+blah 
+-------------------------------------
+
+### 
+
+```{r}
+hlp_repo_details(
+  repos %>% filter(repo %in% tags$tlg)
+)
+```  
+
+Manifesto
+=====================================     
+   
+Column 
+-------------------------------------
+
+### Manifesto
+
+The objective of the Github [organisation github.com/openpharm](https://github.com/openpharma) (openpharma) is to provide a neutral home for open source software that is not tied to one company or institution. This Github organization is managed under the following principals:
+
+Hosting repositories in a neutral space:
+
+* openpharma allows repositories housed within it to set their own governance model
+* openpharma is open to any project related to the Pharma industry
+* openpharma makes no assumptions on what packages are part of an ‘ideal’ workflow
+* a preference is always placed on opensource from day 1, but openpharma will also host packages in private repos on request
+* [at launch, Roche has admin status for the organization] openpharma will work towards a governance model that is inclusive and builds trust in those contributing to packages (e.g. use a more formalized consortia like the pharmaverse to provide governance of the Github organization)
+* openpharma is open to collaborating with relevant organizations like PHUSE, R Consortium, PSI and the pharmaverse – but  openpharma will remain an open host to share projects and provide a platform for repositories looking for a neutral host. 
+* openpharma will not hold any IP or copyright of associated projects, it will not be a platform for discussion or host initiatives, and it will not release opinions or standards on which repositories form part of an ideal workflow.
+
+Promoting collaboration on projects:
+
+* openpharma will aim to build an inclusive list of collaborative projects hosted on github.com that goes beyond those physically hosted in github.com/openpharma.
+* openpharma will surface these projects to encourage collaboration (e.g. provide a front end like https://insights.lfx.linuxfoundation.org/projects). As a starter, a proof of concept
+has been made (this site)
+
+
+### Links
+
+- R/Pharma conference: [rinpharma.com](https://rinpharma.com/)
+- R Consortium: [r-consortium.org](https://www.r-consortium.org/)
+- Get your R project funded!: [ISC](https://www.r-consortium.org/projects/call-for-proposals)

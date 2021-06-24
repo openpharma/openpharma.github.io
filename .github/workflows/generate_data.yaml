@@ -27,6 +27,7 @@ jobs:
           install.packages("remotes")
           install.packages("magrittr")
           install.packages("yaml")
+          install.packages("DT")
           install.packages("dplyr")
           install.packages("tibble")
           install.packages("tidyr")

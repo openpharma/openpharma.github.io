@@ -1,0 +1,55 @@
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+name: gendata
+
+jobs:
+  gendata:
+    runs-on: macOS-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GH_OPENPHARMA }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: r-lib/actions/setup-r@master
+        with:
+          r-version: 'release'
+
+      - uses: r-lib/actions/setup-pandoc@master
+
+      - name: Install dependencies
+        run: |
+          install.packages("devtools")
+          install.packages("remotes")
+          install.packages("magrittr")
+          install.packages("yaml")
+          install.packages("dplyr")
+          install.packages("tibble")
+          install.packages("tidyr")
+          install.packages("glue")
+          install.packages("flexdashboard")
+          install.packages("thematic")
+          install.packages("ggplot2")
+          install.packages("lubridate")
+          remotes::install_github("rstudio/fontawesome")
+          remotes::install_github("openpharma/GithubMetrics")
+          install.packages("pins")
+        shell: Rscript {0}
+
+      - name: Deploy data
+        run: |
+          Rscript create_data.R
+
+      - name: Install dependencies
+        run: |
+          rmarkdown::render("index.Rmd")
+          dir.create("build")
+          file.copy(from = "index.html", to = "build/index.html")
+        shell: Rscript {0}
+        
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: build # The folder the action should deploy.

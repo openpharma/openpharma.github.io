@@ -25,6 +25,7 @@ jobs:
         run: |
           install.packages("devtools")
           install.packages("remotes")
+          remotes::install_github("rstudio/rmarkdown")
           install.packages("magrittr")
           install.packages("yaml")
           install.packages("DT")

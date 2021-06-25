@@ -7,7 +7,7 @@ output:
       bootswatch: minty
     orientation: rows
     social: menu
-    source_code: embed
+    source_code: https://github.com/openpharma/openpharma.github.io
     navbar:
       - { title: "Github", href: "https://github.com/openpharma/", align: right, icon: github}
 ---
@@ -191,7 +191,7 @@ hlp_repo_details(repos)
 
 ### People
     
-```{r}
+```{r, echo = FALSE}
 DT::datatable(
   contributors %>%
     left_join(

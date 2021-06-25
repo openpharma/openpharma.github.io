@@ -254,7 +254,7 @@ hlp_repo_details <- function(x){
               Description = description,
               `Type` = language,
               `Last updated`,
-              Similar
+              `Contributor overlap` = Similar
           ), 
       rownames = FALSE,
       escape = FALSE,

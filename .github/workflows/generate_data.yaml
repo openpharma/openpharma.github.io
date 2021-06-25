@@ -20,8 +20,13 @@ jobs:
           r-version: 'release'
 
       - uses: r-lib/actions/setup-pandoc@master
-
+      
       - name: Install dependencies
+      run: |
+            - whereis hugo
+            - which hugo
+
+      - name: Install R dependencies
         run: |
           install.packages("devtools")
           install.packages("remotes")
@@ -53,7 +58,7 @@ jobs:
           file.copy(from = "index.html", to = "build/index.html")
         shell: Rscript {0}
         
-      - name: Deploy 🚀
+      - name: Deploy site 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages # The branch the action should deploy to.

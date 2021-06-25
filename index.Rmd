@@ -22,6 +22,8 @@ library(glue)
 library(tidyr)
 library(fontawesome) # devtools::install_github("rstudio/fontawesome")
 
+library(purrr)
+
 
 
 thematic::thematic_rmd(
@@ -46,13 +48,85 @@ library(pins)
 ```
 
 ```{r prepdata}
-repos <- repos %>%
-  mutate(
-    language = case_when(
-      repo %in% tags$r ~ as.character(fa("r-project", fill = "steelblue")),
-      repo %in% tags$python ~ as.character(fa("python", fill = "goldenrod"))
+# add repos
+  repos <- repos %>%
+    mutate(
+      language = case_when(
+        repo %in% tags$r ~ as.character(fa("r-project", fill = "steelblue")),
+        repo %in% tags$python ~ as.character(fa("python", fill = "goldenrod"))
+      )
     )
-  )
+
+# Relationships 'tween repos ------------------------------------------------------------
+
+  get_overlap <- function(
+    repo_name = "rtables", data
+  ){
+    
+    i_authors <- data %>%
+      filter(full_name == repo_name) %>%
+      filter(author != ".gitconfig missing email") %>%
+      pull(author) %>% unique() 
+    
+    i_overlap <- data %>%
+      filter(full_name != repo_name) %>%
+      filter(author %in% i_authors) %>%
+      group_by(full_name) %>%
+      summarise(n = n_distinct(author)) %>%
+      mutate(
+        repo1 = repo_name,
+        id = paste(pmin(repo1,full_name),pmax(repo1,full_name))
+      ) %>%
+      select(
+        id,repo1,repo2 = full_name,n
+      )
+    
+    i_overlap
+  }
+
+# table overlap --------------------------------------------------------------
+
+  connections <- unique(commits$full_name) %>%
+    map(get_overlap, data = commits) %>%
+    bind_rows() %>%
+    group_by(id) %>% slice(1) %>% ungroup()
+
+
+  collab_tables <- NULL
+  for (i in unique(commits$full_name)) {
+    list <- connections %>%
+      filter(repo1 == i | repo2 == i) %>%
+      mutate(
+        repo = trimws(gsub(pattern = i,replacement = "",id))
+      ) %>%
+      select(
+        repo = repo, overlap = n
+      ) %>%
+      arrange(-overlap) %>%
+      mutate(
+        Similar = glue('<a href="https://github.com/{repo}">{basename(repo)}</a>')
+      ) %>%
+      slice(1:3) %>%
+      pull(Similar) %>% paste(collapse = ", ")
+
+    if (length(table) == 1){
+      output_table <- tibble(
+        full_name = i,
+        Similar = list
+      )
+      
+      collab_tables <- bind_rows(
+      output_table,collab_tables
+    )
+    }
+  }
+  
+  collab_tables <- collab_tables %>%
+    filter(Similar != "")
+
+  repos <- repos %>%
+    left_join(collab_tables, by = "full_name")
+
 ```
 
 Organization
@@ -179,7 +253,8 @@ hlp_repo_details <- function(x){
               Repo,
               Description = description,
               `Type` = language,
-              `Last updated`
+              `Last updated`,
+              Similar
           ), 
       rownames = FALSE,
       escape = FALSE,

@@ -20,11 +20,6 @@ jobs:
           r-version: 'release'
 
       - uses: r-lib/actions/setup-pandoc@master
-      
-      - name: Install dependencies
-      run: |
-            - whereis hugo
-            - which hugo
 
       - name: Install R dependencies
         run: |

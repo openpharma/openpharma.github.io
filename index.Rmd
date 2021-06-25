@@ -205,9 +205,9 @@ DT::datatable(
     ) %>%
     mutate(
       last_active = Sys.Date() - last_active,
-      contributor = glue(
+      contributor = as.character(glue(
         '<img src="{avatar}" alt="" height="30" width = "30"> {name} (<a href="https://github.com/{author}">{author}</a>)'
-        ),
+        )),
       Blog = case_when(
         blog == "" ~ "",
         TRUE ~ as.character(glue('<a href="{blog}">link</a>'))

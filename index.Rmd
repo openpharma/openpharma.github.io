@@ -48,7 +48,7 @@ library(pins)
 ```
 
 ```{r prepdata}
-# add repos
+# What type of repo?  ------------------------------------------------------------
   repos <- repos %>%
     mutate(
       language = case_when(
@@ -56,6 +56,49 @@ library(pins)
         repo %in% tags$python ~ as.character(fa("python", fill = "goldenrod"))
       )
     )
+
+# What people work on  ------------------------------------------------------------
+  
+contributors <- contributors %>%
+  left_join(
+    commits %>%
+      group_by(author) %>%
+      arrange(desc(datetime)) %>%
+      summarise(
+        repo_list = paste0(unique(basename(full_name)), collapse = " | ")
+      ),
+    by = "author"
+  )
+
+
+  # contributors <- contributors %>%
+  #   # Last touched
+  #   left_join(
+  #     commits %>%
+  #       group_by(author) %>%
+  #       arrange(desc(datetime)) %>%
+  #       slice(1) %>%
+  #       select(author, repo_recent = full_name),
+  #     by = "author"
+  #   ) %>%
+  #   left_join(
+  #     # commits
+  #     commits %>%
+  #       group_by(author, full_name) %>%
+  #       summarise(commits = n()) %>%
+  #       group_by(author) %>%
+  #       arrange(desc(commits)) %>%
+  #       slice(1) %>%
+  #       select(author, repo_most = full_name),
+  #     by = "author"      
+  #   )  %>%
+  #   mutate(
+  #     repo_text = case_when(
+  #       !is.na(repo_recent) ~ glue(
+  #         '<a href="https://github.com/{repo_recent}">{basename(repo_recent)}</a> | <a href="https://github.com/{repo_most}">{basename(repo_most)}</a> ')
+  #     )
+  #   )
+    
 
 # Relationships 'tween repos ------------------------------------------------------------
 
@@ -293,6 +336,7 @@ DT::datatable(
     select(
       `Name (GH handle)` = contributor,
       Repos = contributed_to,
+      `Repo list` = repo_list,
       `Commits` = commits,
       `Days since active` = last_active,
       Company = company,

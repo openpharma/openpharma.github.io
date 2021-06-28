@@ -21,6 +21,7 @@ library(lubridate)
 library(glue)
 library(tidyr)
 library(fontawesome) # devtools::install_github("rstudio/fontawesome")
+library(plotly)
 
 library(purrr)
 
@@ -171,6 +172,8 @@ contributors <- contributors %>%
     left_join(collab_tables, by = "full_name")
 
 ```
+
+
 
 Organization
 ===================================== 
@@ -347,6 +350,7 @@ DT::datatable(
     rownames = FALSE,
     fillContainer = TRUE)
 ```
+
 ### Health
     
 ```{r}
@@ -508,7 +512,49 @@ repos %>%
     )
 ```
 
-> For details  on the metrics, please see XXXXXX
+### Growth
+
+```{r}
+### People activity over time
+plot <- commits %>%
+  mutate(
+    month = format(date, "%m"), 
+    year = format(date, "%Y"),
+    year_mon = as.Date(glue("{year}-{month}-01"))
+    ) %>%
+  group_by(year_mon) %>%
+  summarise(
+    Repos = n_distinct(full_name),
+    People = n_distinct(author)
+  ) %>%
+  filter(year_mon >= as.Date("2020-01-01")) %>%
+  pivot_longer(
+    !year_mon,
+    names_to = "Active by month",
+    values_to = "Value"
+  ) %>%
+  # remove last 
+  group_by(`Active by month`) %>%
+  arrange(year_mon) %>%
+  slice(1:(n() - 1)) %>%
+  ggplot(
+    aes(
+      year_mon, 
+      Value, 
+      group = `Active by month`,
+      colour = `Active by month`
+    )
+  ) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Active repos and people defined by monthly commit activity",
+    x = "Monthly",
+    y = "Active"
+  ) + theme(legend.title = element_blank())
+
+ggplotly(plot)
+```
 
 Filing tools {data-navmenu="Categories"}
 =====================================  

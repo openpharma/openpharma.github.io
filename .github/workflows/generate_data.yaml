@@ -31,6 +31,7 @@ jobs:
           install.packages("DT")
           install.packages("dplyr")
           install.packages("tibble")
+          install.packages("plotly")          
           install.packages("tidyr")
           install.packages("glue")
           install.packages("flexdashboard")

@@ -89,7 +89,13 @@ lookback_days <- 2
     d_all_commits <- GithubMetrics::gh_commits_get(
       d_repos %>% dplyr::filter(MB > 0) %>% dplyr::pull(full_name), 
       days_back = lookback_days
-      ) %>%
+      ) 
+    
+    if(nrow(d_all_commits) == 0) {
+      stop("No new commits! Stopping build")
+    }
+    
+    d_all_commits <- d_all_commits %>%
       dplyr::filter(!author %in% c(".gitconfig missing email","actions-user")) %>%
       dplyr::mutate(
         date = as.Date(datetime)

@@ -315,12 +315,14 @@ hlp_repo_details(repos)
 ```{r, echo = FALSE}
 DT::datatable(
   contributors %>%
+    select(-last_active) %>%
     left_join(
       commits %>%
         group_by(author) %>%
         summarise(
           contributed_to = n_distinct(full_name),
-          commits = n()
+          commits = n(),
+          last_active = max(date)
         ),
       by = "author"
     ) %>%

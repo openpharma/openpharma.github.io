@@ -27,6 +27,8 @@ lookback_days <- 2
       GithubMetrics::gh_repos_clean(.)
   }
   
+  safe_hlp_org_repos <- purrr::possibly(hlp_org_repos, otherwise = NULL)
+  
   hlp_expand_vector <- function(x){
     expanded <- strsplit(x, ", ") 
     unlist(expanded) 
@@ -59,7 +61,7 @@ lookback_days <- 2
       )
     # Get all public repos
     d_all_repos <- unique(c("openpharma",d_scan_repos$org)) %>%
-       purrr::map_dfr(hlp_org_repos) %>%
+       purrr::map_dfr(safe_hlp_org_repos) %>%
        # pretty it up
       dplyr::rename(
         repo = name

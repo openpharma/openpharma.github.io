@@ -71,4 +71,9 @@ tags:
       - rtables, r2rtf
       - Tplyr
       - visR
+    clinical-statistics:
+      - crmPack
+      - simaerep
+      - simtrial
+      - syntrial
 

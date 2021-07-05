@@ -43,6 +43,7 @@ lookback_days <- 2
     # type
     tag_filing <- hlp_expand_vector(d_scanme$tags$type$`filing-tools`)
     tag_tlg <- hlp_expand_vector(d_scanme$tags$type$tlg)
+    tag_clinstats <- hlp_expand_vector(d_scanme$tags$type$`clinical-statistics`)
   
     # exclude these from openpharma
     d_donot_scan_repos <- d_scanme$openpharma_exclude 
@@ -155,7 +156,8 @@ lookback_days <- 2
       r = tag_r,
       python = tag_python,
       filing = tag_filing,
-      tlg = tag_tlg
+      tlg = tag_tlg,
+      clinstats = tag_clinstats
     )
     
     pins::pin(

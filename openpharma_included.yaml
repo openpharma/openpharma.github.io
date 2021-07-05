@@ -31,6 +31,7 @@ repos:
   pharmaR:
     - riskmetric
   phuse-org:
+    - aesummaries
     - valtools
   rgcgithub:
     - regenie

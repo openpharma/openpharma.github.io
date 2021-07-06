@@ -586,6 +586,20 @@ hlp_repo_details(
 )
 ```  
 
+Clinical statistics {data-navmenu="Categories"}
+=====================================  
+
+blah 
+-------------------------------------
+
+### 
+
+```{r}
+hlp_repo_details(
+  repos %>% filter(repo %in% tags$clinstats)
+)
+```  
+
 Manifesto
 =====================================     
    

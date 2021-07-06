@@ -44,6 +44,7 @@ repos:
 tags:
   lang:
     r:
+      - aesummaries
       - crmPack, CTP
       - facetsr
       - gsDesign2

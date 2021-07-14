@@ -41,6 +41,8 @@ repos:
     - ggtips
     - Global-HTA-Evidence-Open
     - crmPack
+  UCL:
+    - RefbasedMI
 tags:
   lang:
     r:
@@ -50,7 +52,7 @@ tags:
       - gsDesign2
       - ggtips, Global-HTA-Evidence-Open, GithubMetrics
       - pkglite, pharmaRTF, metacore, nlmixr 
-      - r2rtf, rfacts, rCPDMS
+      - r2rtf, rfacts, rCPDMS, RefbasedMI
       - respectables, riskmetric, rtables, RDO, r-license-report
       - simtrial
       - staged.dependencies, simaerep, syntrial
@@ -78,4 +80,5 @@ tags:
       - simaerep
       - simtrial
       - syntrial
+      - RefbasedMI
 

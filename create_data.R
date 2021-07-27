@@ -5,7 +5,7 @@ library(magrittr)
 # dashboard - plotly thematic 
 
 # Vars
-lookback_days <- 2
+lookback_days <- 10
 
 # Get the things to scan
   d_scanme <- yaml::read_yaml("openpharma_included.yaml")

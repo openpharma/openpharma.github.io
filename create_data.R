@@ -89,6 +89,7 @@ lookback_days <- 10
       )
     
 # Get commits -----------------------
+    message("Get commmits")
     d_all_commits <- GithubMetrics::gh_commits_get(
       d_repos %>% dplyr::filter(MB > 0) %>% dplyr::pull(full_name), 
       days_back = lookback_days
@@ -105,6 +106,7 @@ lookback_days <- 10
       )
     
 # Get issues -----------------------
+    message("Get issues")
     d_all_issues <- GithubMetrics::gh_issues_get(
       d_repos %>% dplyr::filter(MB > 0) %>% dplyr::pull(full_name), 
       days_back = lookback_days
@@ -129,6 +131,7 @@ lookback_days <- 10
     
     
 # Get people -----------------------
+    message("Get People")
     contributors <- d_all_commits %>%
       dplyr::group_by(author) %>%
       dplyr::summarise(

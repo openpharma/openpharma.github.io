@@ -138,10 +138,12 @@ lookback_days <- 10
       dplyr::summarise(
         commits = dplyr::n()
       ) 
-    message("Get People - sum commits")
+    message("Get People - get usr info")
+    user_info <- GithubMetrics::gh_user_get(contributors$author)
+    message("Get People - join usr info")
     contributors <- contributors %>%
       dplyr::left_join(
-        GithubMetrics::gh_user_get(contributors$author),
+        user_info,
         by = c("author" = "username")
       )
     

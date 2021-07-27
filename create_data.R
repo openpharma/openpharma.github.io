@@ -132,12 +132,13 @@ lookback_days <- 10
     
 # Get people -----------------------
     message("Get People")
+    message("Get People - sum commits")
     contributors <- d_all_commits %>%
       dplyr::group_by(author) %>%
       dplyr::summarise(
         commits = dplyr::n()
       ) 
-    
+    message("Get People - sum commits")
     contributors <- contributors %>%
       dplyr::left_join(
         GithubMetrics::gh_user_get(contributors$author),
@@ -145,6 +146,8 @@ lookback_days <- 10
       )
     
     # tidy
+    message("Get People - rename")
+    cat(contributors)
     contributors <- contributors %>%
       dplyr::mutate(
         name = dplyr::if_else(is.na(name),author,name)
@@ -153,6 +156,7 @@ lookback_days <- 10
 
     
 # Upload -------------
+    message("Upload")
     
   # tags
     all_tags <- list(

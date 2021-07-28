@@ -139,7 +139,7 @@ lookback_days <- 10
         commits = dplyr::n()
       ) 
     message("Get People - get usr info")
-    message(cat(contributors$author))
+    message(str(contributors$author))
     user_info <- GithubMetrics::gh_user_get(contributors$author)
     message("Get People - join usr info")
     contributors <- contributors %>%
@@ -150,7 +150,7 @@ lookback_days <- 10
     
     # tidy
     message("Get People - rename")
-    cat(contributors)
+    message(str(contributors))
     contributors <- contributors %>%
       dplyr::mutate(
         name = dplyr::if_else(is.na(name),author,name)

@@ -140,7 +140,7 @@ lookback_days <- 10
       ) 
     message("Get People - get usr info")
     message(str(contributors$author))
-    user_info <- GithubMetrics::gh_user_get(contributors$author)
+    user_info <- GithubMetrics::gh_user_get(na.omit(contributors$author))
     message("Get People - join usr info")
     contributors <- contributors %>%
       dplyr::left_join(

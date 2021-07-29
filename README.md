@@ -5,7 +5,7 @@ Further precompetitive collaboration in life science area.
 Website at: openpharma.github.io
 
 Last 7 days:
-![openpharma.github.io Actions](https://api.meercode.io/badge/openpharma/openpharma.github.io?type=ci-count&branch=master&lastDay=7)
+![openpharma.github.io Actions](https://api.meercode.io/badge/openpharma/openpharma.github.io?type=ci-count&lastDay=14)
 
 # Add your repo!
 

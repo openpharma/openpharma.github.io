@@ -28,6 +28,9 @@ repos:
     - peax
     - pisces
     - xgxr
+  openanalytics:
+    - inTextSummaryTable
+    - patientProfilesVis
   pharmaR:
     - riskmetric
   phuse-org:
@@ -51,7 +54,9 @@ tags:
       - facetsr
       - gsDesign2
       - ggtips, Global-HTA-Evidence-Open, GithubMetrics
-      - pkglite, pharmaRTF, metacore, nlmixr 
+      - inTextSummaryTable
+      - pkglite, pharmaRTF, patientProfilesVis
+      - metacore, nlmixr 
       - r2rtf, rfacts, rCPDMS, RefbasedMI
       - respectables, riskmetric, rtables, RDO, r-license-report
       - simtrial
@@ -67,11 +72,13 @@ tags:
       - metacore
       - pkglite
       - riskmetric
+      - rtables
       - Tplyr
       - xportr
       - r2rtf
     tlg:
       - facetsr, ggtips, 
+      - inTextSummaryTable
       - rtables, r2rtf
       - Tplyr
       - visR

@@ -16,6 +16,7 @@ repos:
     - rfacts
   insightsengineering:
     - r-license-report
+    - thevalidatoR
   Merck:
     - pkglite
     - gsDesign2

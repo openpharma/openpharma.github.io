@@ -46,6 +46,8 @@ repos:
     - Global-HTA-Evidence-Open
     - crmPack
     - synthetic.cdisc.data
+  Roche-GSK:
+    - admiral
   UCL:
     - RefbasedMI
 tags:

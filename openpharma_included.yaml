@@ -4,6 +4,7 @@ openpharma_exclude:
   - visR-docs
   - openpharma.github.io
   - BBS-causality-training
+  - rinpharma_workshop_2021
 repos:
   AstraZeneca:
     - kallisto
@@ -17,6 +18,7 @@ repos:
   insightsengineering:
     - r-license-report
     - thevalidatoR
+    - rbmi
   Merck:
     - pkglite
     - gsDesign2
@@ -62,6 +64,7 @@ tags:
       - pkglite, pharmaRTF, patientProfilesVis
       - metacore, nlmixr 
       - r2rtf, rfacts, rCPDMS, RefbasedMI
+      - rbmi
       - respectables, riskmetric, rtables, RDO, r-license-report
       - simtrial
       - staged.dependencies, simaerep, syntrial
@@ -88,6 +91,7 @@ tags:
       - visR
     clinical-statistics:
       - crmPack
+      - rbmi
       - simaerep
       - simtrial
       - syntrial

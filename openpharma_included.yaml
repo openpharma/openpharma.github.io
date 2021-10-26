@@ -58,7 +58,9 @@ repos:
 tags:
   lang:
     r:
+      - admiral
       - aesummaries
+      - covtracer
       - crmPack, CTP
       - facetsr
       - gsDesign2

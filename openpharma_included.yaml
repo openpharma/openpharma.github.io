@@ -14,9 +14,14 @@ repos:
     - metacore
   EliLillyCo:
     - rfacts
+  Genentech:
+    - covtracer
+    - midasHLA
+    - psborrow
   insightsengineering:
     - r-license-report
     - thevalidatoR
+    - rbmi
   Merck:
     - pkglite
     - gsDesign2
@@ -60,7 +65,8 @@ tags:
       - ggtips, Global-HTA-Evidence-Open, GithubMetrics
       - inTextSummaryTable
       - pkglite, pharmaRTF, patientProfilesVis
-      - metacore, nlmixr 
+      - metacore, nlmixr, psborrow
+      - rbmi
       - r2rtf, rfacts, rCPDMS, RefbasedMI
       - respectables, riskmetric, rtables, RDO, r-license-report
       - simtrial
@@ -88,6 +94,8 @@ tags:
       - visR
     clinical-statistics:
       - crmPack
+      - rbmi
+      - psborrow
       - simaerep
       - simtrial
       - syntrial

@@ -25,6 +25,7 @@ library(plotly)
 
 library(purrr)
 library(dm)
+library(DiagrammeR)
 
 
 

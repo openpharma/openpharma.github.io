@@ -45,7 +45,7 @@ jobs:
         run: |
           snakemake -j2  -F all
           mkdir build
-          cp index.html /build
+          cp index.html ./build
         
       - name: Deploy site 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4

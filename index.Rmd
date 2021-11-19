@@ -24,6 +24,7 @@ library(fontawesome) # devtools::install_github("rstudio/fontawesome")
 library(plotly)
 
 library(purrr)
+library(dm)
 
 
 
@@ -36,143 +37,12 @@ theme_set(theme_bw(base_size = 20))
 ```
 
 ```{r getdata}
-library(pins)
-  pins::board_register_github(
-    repo = "openpharma/openpharma_log", branch = "main"
-    )
-  
-  commits <- pin_get("all-commits", board = "github")
-  contributors <- pin_get("all-contributors", board = "github")
-  repos <- pin_get("all-repos", board = "github", cache = FALSE)
-  issues <- pin_get("all-issues", board = "github", cache = FALSE)
-  tags <- pin_get("all-tags", board = "github", cache = FALSE)
+library(readr)
+  commits <- read_rds("scratch/gh_commits.rds")
+  people <- read_rds("scratch/people.rds")
+  repos <- read_rds("scratch/repos.rds")
+  help <- read_rds("scratch/help.rds")
 ```
-
-```{r prepdata}
-# What type of repo?  ------------------------------------------------------------
-  repos <- repos %>%
-    mutate(
-      language = case_when(
-        repo %in% tags$r ~ as.character(fa("r-project", fill = "steelblue")),
-        repo %in% tags$python ~ as.character(fa("python", fill = "goldenrod"))
-      )
-    )
-
-# What people work on  ------------------------------------------------------------
-  
-contributors <- contributors %>%
-  left_join(
-    commits %>%
-      group_by(author) %>%
-      arrange(desc(datetime)) %>%
-      summarise(
-        repo_list = paste0(unique(basename(full_name)), collapse = " | ")
-      ),
-    by = "author"
-  )
-
-
-  # contributors <- contributors %>%
-  #   # Last touched
-  #   left_join(
-  #     commits %>%
-  #       group_by(author) %>%
-  #       arrange(desc(datetime)) %>%
-  #       slice(1) %>%
-  #       select(author, repo_recent = full_name),
-  #     by = "author"
-  #   ) %>%
-  #   left_join(
-  #     # commits
-  #     commits %>%
-  #       group_by(author, full_name) %>%
-  #       summarise(commits = n()) %>%
-  #       group_by(author) %>%
-  #       arrange(desc(commits)) %>%
-  #       slice(1) %>%
-  #       select(author, repo_most = full_name),
-  #     by = "author"      
-  #   )  %>%
-  #   mutate(
-  #     repo_text = case_when(
-  #       !is.na(repo_recent) ~ glue(
-  #         '<a href="https://github.com/{repo_recent}">{basename(repo_recent)}</a> | <a href="https://github.com/{repo_most}">{basename(repo_most)}</a> ')
-  #     )
-  #   )
-    
-
-# Relationships 'tween repos ------------------------------------------------------------
-
-  get_overlap <- function(
-    repo_name = "rtables", data
-  ){
-    
-    i_authors <- data %>%
-      filter(full_name == repo_name) %>%
-      filter(author != ".gitconfig missing email") %>%
-      pull(author) %>% unique() 
-    
-    i_overlap <- data %>%
-      filter(full_name != repo_name) %>%
-      filter(author %in% i_authors) %>%
-      group_by(full_name) %>%
-      summarise(n = n_distinct(author)) %>%
-      mutate(
-        repo1 = repo_name,
-        id = paste(pmin(repo1,full_name),pmax(repo1,full_name))
-      ) %>%
-      select(
-        id,repo1,repo2 = full_name,n
-      )
-    
-    i_overlap
-  }
-
-# table overlap --------------------------------------------------------------
-
-  connections <- unique(commits$full_name) %>%
-    map(get_overlap, data = commits) %>%
-    bind_rows() %>%
-    group_by(id) %>% slice(1) %>% ungroup()
-
-
-  collab_tables <- NULL
-  for (i in unique(commits$full_name)) {
-    list <- connections %>%
-      filter(repo1 == i | repo2 == i) %>%
-      mutate(
-        repo = trimws(gsub(pattern = i,replacement = "",id))
-      ) %>%
-      select(
-        repo = repo, overlap = n
-      ) %>%
-      arrange(-overlap) %>%
-      mutate(
-        Similar = glue('<a href="https://github.com/{repo}">{basename(repo)}</a>')
-      ) %>%
-      slice(1:3) %>%
-      pull(Similar) %>% paste(collapse = ", ")
-
-    if (length(table) == 1){
-      output_table <- tibble(
-        full_name = i,
-        Similar = list
-      )
-      
-      collab_tables <- bind_rows(
-      output_table,collab_tables
-    )
-    }
-  }
-  
-  collab_tables <- collab_tables %>%
-    filter(Similar != "")
-
-  repos <- repos %>%
-    left_join(collab_tables, by = "full_name")
-
-```
-
 
 
 Organization
@@ -197,23 +67,23 @@ valueBox(nrow(commits), caption = "Commits", color = "success", icon = "fa-code-
 
 ```{r}
 valueBox(
-  n_distinct(contributors$author), 
+  n_distinct(people$author), 
   caption = "People", color = "success", icon = "fa-users")
 ```
 
-### Issues
+### Intro issues
 
 ```{r}
 valueBox(
-  issues %>% filter(state == "open") %>% nrow(), 
-  caption = "Open Issues", color = "warning", icon = "fa-question")
+  help  %>% nrow(), 
+  caption = "Open issues needing help", color = "warning", icon = "fa-question")
 ```
 
 ### Companies
 
 ```{r}
 valueBox(
-  glue("~{n_distinct(contributors$company)}"), 
+  n_distinct(people$company), 
   caption = "Unique employers", color = "success", icon = "fa-building")
 ```
 
@@ -262,7 +132,7 @@ valueBox(
 
 ```{r}
 valueBox(
-  length(tags$python), 
+  repos %>% filter(lang == "python") %>% nrow(), 
   caption = "Python libraries", color = "info",
   icon = "fab fa-python"
 )
@@ -272,7 +142,7 @@ valueBox(
 
 ```{r}
 valueBox(
-  length(tags$r), 
+  repos %>% filter(lang == "r") %>% nrow(), 
   caption = "R packages", color = "info",
   icon = "fab fa-r-project"
 )
@@ -289,18 +159,15 @@ hlp_repo_details <- function(x){
   DT::datatable(
       x %>%
           mutate(
-            `Last updated` = as.Date(updated_at),
-            Repo = glue(
-              '<a href="https://github.com/{full_name}">{full_name}</a>'
-              )
+            `Last updated` = as.Date(gh_updated),
             ) %>%
           arrange(desc(`Last updated`)) %>%
           select(
-              Repo,
-              Description = description,
-              `Type` = language,
+              Repo = pretty_repo,
+              Description = imputed_description,
+              `Type` = lang,
               `Last updated`,
-              `Contributor overlap` = Similar
+              `Contributor overlap` = similar
           ), 
       rownames = FALSE,
       escape = FALSE,
@@ -314,18 +181,9 @@ hlp_repo_details(repos)
     
 ```{r, echo = FALSE}
 DT::datatable(
-  contributors %>%
-    select(-last_active) %>%
-    left_join(
-      commits %>%
-        group_by(author) %>%
-        summarise(
-          contributed_to = n_distinct(full_name),
-          commits = n(),
-          last_active = max(date)
-        ),
-      by = "author"
-    ) %>%
+  people %>%
+    mutate(my = format(last_active, "%Y-%m")) %>% 
+    group_by(my) %>% mutate(month_commits = sum(commits)) %>% ungroup %>%
     mutate(
       last_active = Sys.Date() - last_active,
       contributor = as.character(glue(
@@ -337,7 +195,7 @@ DT::datatable(
         ),
       Name = glue("{name} ({author})")
       ) %>%
-    arrange(last_active, desc(contributed_to), desc(commits)) %>%
+    arrange(desc(my),desc(month_commits), desc(contributed_to), desc(commits)) %>%
     select(
       `Name (GH handle)` = contributor,
       Repos = contributed_to,
@@ -360,148 +218,18 @@ DT::datatable(
 
 
 repos %>%
-  mutate(
-    days_since_update = as.numeric(Sys.Date() - as.Date(updated_at))
-  ) %>%
-  select(full_name, days_since_update) %>%
-  left_join(
-    # time current open
-    issues %>%
-      group_by(full_name) %>%
-      filter(state == "open") %>%
-      summarise(
-        open_issues = n(),
-        median_age_open_issue = median(days_open),
-        median_inactivity_open_issue = median(days_no_activity)
-      ),
-    by = "full_name"
-  ) %>%
-  left_join(
-    # time to close
-    issues %>%
-      group_by(full_name) %>%
-      filter(state == "closed") %>%
-      summarise(
-        closed_issues = n(),
-        median_timeto_close = median(days_open)
-      )  ,
-    by = "full_name"  
-  ) %>%
-  left_join(
-    # increase in commits?
-    commits %>%
-      group_by(full_name) %>%
-      mutate(
-        date_numeric = as.numeric(date),
-        midpoint = quantile(date_numeric, 0.5),
-        firsthalf = ifelse(date_numeric >= midpoint,FALSE,TRUE)
-      ) %>%
-      summarise(
-        commits = n(),
-        secondhalf = sum(ifelse(!firsthalf,1,0)),
-        firsthalf = sum(ifelse(firsthalf,1,0))
-      ) %>%
-      mutate(
-        abs = secondhalf - firsthalf
-      ) %>%
-      select(
-        full_name, abs_commits = abs,commits
-      )   ,
-    by = "full_name" 
-  ) %>%
-  left_join(
-    # increase in people?
-    commits %>%
-      group_by(full_name) %>%
-      summarise(
-        authors_ever = n_distinct(author)
-      ),
-    by = "full_name"
-  ) %>%
-  left_join(
-    # increase in people?
-    commits %>%
-      group_by(full_name) %>%
-      mutate(
-        date_numeric = as.numeric(date),
-        midpoint = quantile(date_numeric, 0.5),
-        timing = ifelse(date_numeric >= midpoint,"firsthalf","secondhalf")
-      ) %>%
-      group_by(full_name,timing) %>%
-      summarise(
-        active_people = n_distinct(author)
-      ) %>% ungroup %>%
-      pivot_wider(
-        names_from = timing, values_from = active_people, values_fill = 0
-      ) %>%
-      mutate(
-        ratio = secondhalf/firsthalf,
-        abs_people = secondhalf-firsthalf,
-        percentage_people = round(100*ratio),
-        # if one commit set to 0
-        percentage_people = ifelse(percentage_people == Inf,0,percentage_people)
-      ) %>%
-      select(full_name,abs_people),
-    by = "full_name"
-  ) %>%
-  # Score
-  mutate(
-    score = ifelse(days_since_update < 30*6,1,0),
-    score = case_when(
-      is.na(sum(open_issues,closed_issues, na.rm = TRUE)) ~ score,
-      TRUE ~ score + 1
-    ),
-    score = case_when(
-      commits < 25 ~ score,
-      TRUE ~ score + 1
-    ),
-    score = case_when(
-      authors_ever < 5 ~ score,
-      TRUE ~ score + 1
-    ),
-    score = case_when(
-      is.na(median_age_open_issue) ~ score,
-      median_age_open_issue > 30*6 ~ score,
-      TRUE ~ score + 1
-    ),
-    score = case_when(
-      is.na(median_inactivity_open_issue) ~ score,
-      median_inactivity_open_issue > 30*3 ~ score,
-      TRUE ~ score + 1
-    ),
-    score = case_when(
-      is.na(open_issues) | is.na(closed_issues) ~ score,
-      open_issues > closed_issues ~ score,
-      TRUE ~ score + 1
-    ),
-    score = case_when(
-      is.na(abs_commits)  ~ score,
-      abs_commits < 0 ~ score,
-      TRUE ~ score + 1
-    ),
-    score = case_when(
-      is.na(abs_people)  ~ score,
-      abs_people < 0 ~ score,
-      TRUE ~ score + 1
-    ),
-    Health = round(100*score/max(score)),
-    
-    Repo = glue(
-      '<a href="https://github.com/{full_name}">{full_name}</a>'
-      )
-  ) %>%
   # tidy title
   select(
-    Repo,
+    Repo = pretty_repo,
     Health,
-    Commits = commits,
-    Contributors = authors_ever,
-    `Days repo inactive` = days_since_update,
-    `Median days open for current issues` = median_age_open_issue,
-    `Median days without comments on open issues` = median_inactivity_open_issue,
-    `Median days to close issue` = median_timeto_close,
-    `Change in frequency of commits` = abs_commits,
-    `Change in active contributors` = abs_people
+    Commits,
+    Contributors,
+    `Days repo inactive`,
+    `Median days open for current issues`,
+    `Median days without comments on open issues`,
+    `Median days to close issue`,
+    `Change in frequency of commits`,
+    `Change in active contributors`
   ) %>%
   arrange(
     desc(Health)
@@ -558,47 +286,87 @@ plot <- commits %>%
 ggplotly(plot)
 ```
 
-Filing tools {data-navmenu="Categories"}
-=====================================  
-
-blah 
--------------------------------------
-   
-### 
+### Growth - with denominator
 
 ```{r}
-hlp_repo_details(
-  repos %>% filter(repo %in% tags$filing)
-)
-```  
+range <- commits %>%
+  mutate(
+    month = format(date, "%m"), 
+    year = format(date, "%Y"),
+    year_mon = as.Date(glue("{year}-{month}-01"))
+  ) %>%
+  summarise(
+    min = min(year_mon), max = max(year_mon)
+  )
 
-Tables, listings, graphs {data-navmenu="Categories"}
-=====================================  
+### People activity over time
+plot <- commits %>%
+  mutate(
+    month = format(date, "%m"), 
+    year = format(date, "%Y"),
+    year_mon = as.Date(glue("{year}-{month}-01"))
+    ) %>%
+  group_by(year_mon) %>%
+  summarise(
+    Repos = n_distinct(full_name),
+    People = n_distinct(author)
+  ) %>%
+  left_join(
+    tibble(
+  year_mon = seq.Date(range$min, range$max, by=1)
+  ) %>%
+  left_join(
+    commits %>%
+      mutate(
+        month = format(date, "%m"), 
+        year = format(date, "%Y"),
+        year_mon = as.Date(glue("{year}-{month}-01"))
+      ) %>%
+      group_by(full_name) %>% 
+      arrange(year_mon) %>% slice(1) %>% 
+      # check one per date!
+      group_by(year_mon) %>% summarise(total = n()),
+    by = "year_mon"
+  ) %>%
+  mutate(
+    total = case_when(
+      is.na(total) ~ as.integer(0),
+      TRUE ~ total
+    ),
+    tracked_repos = cumsum(total)
+  ) %>%
+  select(year_mon, `Repo's tracked` = tracked_repos),
+    by = "year_mon"
+  ) %>%
+  filter(year_mon >= as.Date("2020-01-01")) %>%
+  pivot_longer(
+    !year_mon,
+    names_to = "Active by month",
+    values_to = "Value"
+  ) %>%
+  # remove last 
+  group_by(`Active by month`) %>%
+  arrange(year_mon) %>%
+  slice(1:(n() - 1)) %>%
+  ggplot(
+    aes(
+      year_mon, 
+      Value, 
+      group = `Active by month`,
+      colour = `Active by month`
+    )
+  ) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Active repos and people defined by monthly commit activity",
+    x = "Monthly",
+    y = "Active"
+  ) + theme(legend.title = element_blank())
 
-blah 
--------------------------------------
+ggplotly(plot)
+```
 
-### 
-
-```{r}
-hlp_repo_details(
-  repos %>% filter(repo %in% tags$tlg)
-)
-```  
-
-Clinical statistics {data-navmenu="Categories"}
-=====================================  
-
-blah 
--------------------------------------
-
-### 
-
-```{r}
-hlp_repo_details(
-  repos %>% filter(repo %in% tags$clinstats)
-)
-```  
 
 Manifesto
 =====================================     
@@ -632,3 +400,122 @@ has been made (this site)
 - R/Pharma conference: [rinpharma.com](https://rinpharma.com/)
 - R Consortium: [r-consortium.org](https://www.r-consortium.org/)
 - Get your R project funded!: [ISC](https://www.r-consortium.org/projects/call-for-proposals)
+
+Data
+=====================================    
+   
+Row 
+-------------------------------------
+
+### Details on the data pull
+
+The data for this site builds daily. You can access the latest metadata via the 
+links on this page. See the Snakefile for an example of the build
+process
+
+The code that generates this data is in the repo
+[openpharma/openpharma.github.io](https://github.com/openpharma/openpharma.github.io)
+
+<svg width="423pt" height="248pt"
+ viewBox="0.00 0.00 423.26 247.62" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 243.619)">
+<title>snakemake_dag</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-243.619 419.259,-243.619 419.259,4 -4,4"/>
+<!-- 0 -->
+<g id="node1" class="node">
+<title>0</title>
+<path fill="none" stroke="#59d856" stroke-width="2" d="M83.519,-137.8095C83.519,-137.8095 12.16,-137.8095 12.16,-137.8095 6.16,-137.8095 .16,-131.8095 .16,-125.8095 .16,-125.8095 .16,-113.8095 .16,-113.8095 .16,-107.8095 6.16,-101.8095 12.16,-101.8095 12.16,-101.8095 83.519,-101.8095 83.519,-101.8095 89.519,-101.8095 95.519,-107.8095 95.519,-113.8095 95.519,-113.8095 95.519,-125.8095 95.519,-125.8095 95.519,-131.8095 89.519,-137.8095 83.519,-137.8095"/>
+<text text-anchor="middle" x="47.8395" y="-116.8095" font-family="sans" font-size="10.00" fill="#000000">Generate dashboard</text>
+</g>
+<!-- 1 -->
+<g id="node2" class="node">
+<title>1</title>
+<path fill="none" stroke="#d8ac56" stroke-width="2" d="M186.4325,-137.8095C186.4325,-137.8095 148.9255,-137.8095 148.9255,-137.8095 142.9255,-137.8095 136.9255,-131.8095 136.9255,-125.8095 136.9255,-125.8095 136.9255,-113.8095 136.9255,-113.8095 136.9255,-107.8095 142.9255,-101.8095 148.9255,-101.8095 148.9255,-101.8095 186.4325,-101.8095 186.4325,-101.8095 192.4325,-101.8095 198.4325,-107.8095 198.4325,-113.8095 198.4325,-113.8095 198.4325,-125.8095 198.4325,-125.8095 198.4325,-131.8095 192.4325,-137.8095 186.4325,-137.8095"/>
+<text text-anchor="middle" x="167.679" y="-116.8095" font-family="sans" font-size="10.00" fill="#000000">Merge data</text>
+</g>
+<!-- 1&#45;&gt;0 -->
+<g id="edge1" class="edge">
+<title>1&#45;&gt;0</title>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M136.8174,-119.8095C127.3575,-119.8095 116.6226,-119.8095 105.9636,-119.8095"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="105.8115,-116.3096 95.8115,-119.8095 105.8114,-123.3096 105.8115,-116.3096"/>
+</g>
+<!-- 2 -->
+<g id="node3" class="node">
+<title>2</title>
+<path fill="none" stroke="#afd856" stroke-width="2" d="M403.22,-137.8095C403.22,-137.8095 339.376,-137.8095 339.376,-137.8095 333.376,-137.8095 327.376,-131.8095 327.376,-125.8095 327.376,-125.8095 327.376,-113.8095 327.376,-113.8095 327.376,-107.8095 333.376,-101.8095 339.376,-101.8095 339.376,-101.8095 403.22,-101.8095 403.22,-101.8095 409.22,-101.8095 415.22,-107.8095 415.22,-113.8095 415.22,-113.8095 415.22,-125.8095 415.22,-125.8095 415.22,-131.8095 409.22,-137.8095 403.22,-137.8095"/>
+<text text-anchor="middle" x="371.298" y="-116.8095" font-family="sans" font-size="10.00" fill="#000000">openpharma yaml</text>
+</g>
+<!-- 2&#45;&gt;1 -->
+<g id="edge2" class="edge">
+<title>2&#45;&gt;1</title>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M327.3664,-119.8095C292.0849,-119.8095 242.9171,-119.8095 208.4898,-119.8095"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="208.3105,-116.3096 198.3105,-119.8095 208.3104,-123.3096 208.3105,-116.3096"/>
+</g>
+<!-- 3 -->
+<g id="node4" class="node">
+<title>3</title>
+<path fill="none" stroke="#56a9d8" stroke-width="2" d="M284.4885,-239.619C284.4885,-239.619 254.4885,-239.619 254.4885,-239.619 248.4885,-239.619 242.4885,-233.619 242.4885,-227.619 242.4885,-227.619 242.4885,-215.619 242.4885,-215.619 242.4885,-209.619 248.4885,-203.619 254.4885,-203.619 254.4885,-203.619 284.4885,-203.619 284.4885,-203.619 290.4885,-203.619 296.4885,-209.619 296.4885,-215.619 296.4885,-215.619 296.4885,-227.619 296.4885,-227.619 296.4885,-233.619 290.4885,-239.619 284.4885,-239.619"/>
+<text text-anchor="middle" x="269.4885" y="-218.619" font-family="sans" font-size="10.00" fill="#000000">Github</text>
+</g>
+<!-- 2&#45;&gt;3 -->
+<g id="edge5" class="edge">
+<title>2&#45;&gt;3</title>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M353.0965,-138.011C336.8816,-154.2259 312.9896,-178.1179 294.8937,-196.2138"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="292.1286,-194.0291 287.5324,-203.5751 297.0784,-198.9789 292.1286,-194.0291"/>
+</g>
+<!-- 4 -->
+<g id="node5" class="node">
+<title>4</title>
+<path fill="none" stroke="#d85656" stroke-width="2" d="M284.4885,-36C284.4885,-36 254.4885,-36 254.4885,-36 248.4885,-36 242.4885,-30 242.4885,-24 242.4885,-24 242.4885,-12 242.4885,-12 242.4885,-6 248.4885,0 254.4885,0 254.4885,0 284.4885,0 284.4885,0 290.4885,0 296.4885,-6 296.4885,-12 296.4885,-12 296.4885,-24 296.4885,-24 296.4885,-30 290.4885,-36 284.4885,-36"/>
+<text text-anchor="middle" x="269.4885" y="-15" font-family="sans" font-size="10.00" fill="#000000">Metacran</text>
+</g>
+<!-- 2&#45;&gt;4 -->
+<g id="edge6" class="edge">
+<title>2&#45;&gt;4</title>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M353.0965,-101.608C336.8816,-85.3931 312.9896,-61.5011 294.8937,-43.4052"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="297.0784,-40.6401 287.5324,-36.0439 292.1286,-45.5899 297.0784,-40.6401"/>
+</g>
+<!-- 3&#45;&gt;1 -->
+<g id="edge3" class="edge">
+<title>3&#45;&gt;1</title>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M251.287,-203.4175C235.0721,-187.2026 211.1801,-163.3106 193.0842,-145.2147"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="195.2689,-142.4496 185.7229,-137.8534 190.3191,-147.3994 195.2689,-142.4496"/>
+</g>
+<!-- 4&#45;&gt;1 -->
+<g id="edge4" class="edge">
+<title>4&#45;&gt;1</title>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M251.287,-36.2015C235.0721,-52.4164 211.1801,-76.3084 193.0842,-94.4043"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="190.3191,-92.2196 185.7229,-101.7656 195.2689,-97.1694 190.3191,-92.2196"/>
+</g>
+</g>
+</svg>
+
+
+These files contains *all* the data up to today, and was pulled ~ `r Sys.time()`.
+
+- Latest repo data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/repos.csv), [rds](http://openpharma.s3-website.us-east-2.amazonaws.com/repos.rds))
+
+- Latest people data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/people.csv), [rds](http://openpharma.s3-website.us-east-2.amazonaws.com/people.rds))
+
+- Latest who needs help data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/help.csv), [rds](http://openpharma.s3-website.us-east-2.amazonaws.com/help.rds))
+
+### Available data
+
+
+
+```{r}
+dm(repos, people, help) %>%
+  dm_add_pk(table = repos, columns = full_name) %>%
+  dm_add_pk(table = people, columns = author) %>%
+  dm_add_pk(table = help, columns = full_name) %>%
+  dm_add_fk(table = repos, columns = full_name, ref_table = help) %>%
+  dm_draw(
+    view_type = "all", 
+    column_types = TRUE, rankdir = "TB")
+```
+
+<!-- ### Links to all raw data -->
+
+<!-- ```{r} -->
+<!-- readRDS("scratch/s3_contents.rds") %>% knitr::kable() -->
+<!-- ``` -->

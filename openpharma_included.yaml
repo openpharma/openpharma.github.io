@@ -1,105 +1,173 @@
-openpharma_exclude:
-  - tester
-  - openpharma_log
-  - visR-docs
-  - openpharma.github.io
-  - BBS-causality-training
-repos:
-  AstraZeneca:
-    - kallisto
-  atorus-research:
-    - Tplyr
-    - xportr
-    - pharmaRTF
-    - metacore
-  EliLillyCo:
-    - rfacts
-  Genentech:
-    - covtracer
-    - midasHLA
-    - psborrow
-  insightsengineering:
-    - r-license-report
-    - thevalidatoR
-    - rbmi
-  Merck:
-    - pkglite
-    - gsDesign2
-    - r2rtf
-    - rCPDMS
-    - simtrial
-  nlmixrdevelopment:
-    - nlmixr
-  Novartis:
-    - peax
-    - pisces
-    - xgxr
-  openanalytics:
-    - inTextSummaryTable
-    - patientProfilesVis
-  pharmaR:
-    - riskmetric
-  phuse-org:
-    - aesummaries
-    - valtools
-  rgcgithub:
-    - regenie
-  Roche:
-    - rtables
-    - respectables
-    - ggtips
-    - Global-HTA-Evidence-Open
-    - crmPack
-    - synthetic.cdisc.data
-  Roche-GSK:
-    - admiral
-  UCL:
-    - RefbasedMI
-tags:
-  lang:
-    r:
-      - admiral
-      - aesummaries
-      - covtracer
-      - crmPack, CTP
-      - facetsr
-      - gsDesign2
-      - ggtips, Global-HTA-Evidence-Open, GithubMetrics
-      - inTextSummaryTable
-      - pkglite, pharmaRTF, patientProfilesVis
-      - metacore, nlmixr, psborrow
-      - rbmi
-      - r2rtf, rfacts, rCPDMS, RefbasedMI
-      - respectables, riskmetric, rtables, RDO, r-license-report
-      - simtrial
-      - staged.dependencies, simaerep, syntrial
-      - Tplyr, visR
-      - xportr, xgxr
-    python:
-      - kallisto
-      - peax, pisces, org-github-metadata
-  type:
-    filing-tools:
-      - pharmaRTF
-      - metacore
-      - pkglite
-      - riskmetric
-      - rtables
-      - Tplyr
-      - xportr
-      - r2rtf
-    tlg:
-      - facetsr, ggtips, 
-      - inTextSummaryTable
-      - rtables, r2rtf
-      - Tplyr
-      - visR
-    clinical-statistics:
-      - crmPack
-      - rbmi
-      - psborrow
-      - simaerep
-      - simtrial
-      - syntrial
-      - RefbasedMI
+AstraZeneca:
+  kallisto:
+    lang: python
+atorus-research:
+  Tplyr:
+    lang: r
+    type: 
+      - filing-tools
+      - tlg
+  xportr:
+    lang: r
+    type: filing-tools 
+  pharmaRTF:
+    lang: r
+    type:
+      - filing-tools
+  metacore:
+    lang: r
+    type:
+      - filing-tools
+EliLillyCo:
+  rfacts:
+    lang: r
+    type:
+Genentech:
+  covtracer:
+    lang: r
+    type: filing-tools
+  midasHLA:
+    lang: r
+    type: omics
+  psborrow:
+    lang: r
+    type:
+      - clinical-statistics
+insightsengineering:
+  r-license-report:
+    lang: r
+    type: 
+      - filing-tools
+  thevalidatoR:
+    lang: r
+    type: 
+      - filing-tools
+      - gh-action
+  rbmi:
+    lang: r
+    type:
+      - clinical-statistics
+Merck:
+  pkglite:
+    lang: r
+    type:
+      - filing-tools
+  gsDesign2:
+    lang: r
+    type:
+      - filing-tools
+  r2rtf:
+    lang: r
+    type:
+      - filing-tools
+      - tlg
+  rCPDMS:
+    lang: r
+    type: omics
+  simtrial:
+    lang: r
+    type: 
+      - clinical-statistics
+nlmixrdevelopment:
+  nlmixr:
+    lang: r
+    type: pkpd
+Novartis:
+  peax:
+    lang: python
+    type: omics
+  pisces:
+    lang: python
+    type: omics
+  xgxr:
+    lang: r
+    type: pkpd
+openanalytics:
+  inTextSummaryTable:
+    lang: r
+    type: tlg
+  patientProfilesVis:
+    lang: r
+    type: tlg
+openpharma:
+  DataFakeR:
+    lang: r
+    type: synthetic-data
+  CTP:
+    lang: r
+    type:
+  facetsr:
+    lang: r
+    tyoe: 
+      - tlg
+  staged.dependencies:
+    lang: r
+  GithubMetrics:
+    lang: r
+  RDO:
+    lang: r
+  simaerep:
+    lang: r
+    type:   
+      - clinical-statistics
+  syntrial:
+    lang: r
+    type:
+      - clinical-statistics
+  visR:
+    lang: r
+    type:
+      - tlg
+
+pharmaR:
+  riskmetric:
+    lang: r
+    type:
+phuse-org:
+  aesummaries:
+    lang: r
+    type:
+      - filing-tools
+  valtools:
+    lang:
+    type:
+rgcgithub:
+  regenie:
+    lang:
+    type:
+Roche:
+  rtables:
+    lang: r
+    type:
+      - filing-tools
+      - tlg
+  respectables:
+    lang: r
+    type: synthetic-data
+  ggtips:
+    lang: r
+    type:
+      - tlg
+  Global-HTA-Evidence-Open:
+    lang: r
+  crmPack:
+    lang: r
+    type:
+      - clinical-statistics
+  MAIC:
+    lang: r
+    type: clinical-statistics
+  synthetic.cdisc.data:
+    lang: r
+    type: synthetic-data
+Roche-GSK:
+  admiral:
+    lang: r
+    type: 
+      - filing-tools
+UCL:
+  RefbasedMI:
+    lang: r
+    type: 
+      - clinical-statistics
 

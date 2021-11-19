@@ -8,7 +8,7 @@ on:
 name: gendata
 
 jobs:
-  gendata:
+  production:
     runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GH_OPENPHARMA }}
@@ -44,9 +44,8 @@ jobs:
       - name: Build
         run: |
           snakemake -j2  -F all
-          dir.create("build")
-          file.copy(from = "index.html", to = "build/index.html")
-        shell: Rscript {0}
+          mkdir build
+          cp index.html /build
         
       - name: Deploy site 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4

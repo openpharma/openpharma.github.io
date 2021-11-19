@@ -5,7 +5,7 @@ on:
     branches:
       - master
 
-name: gendata
+name: production
 
 jobs:
   production:

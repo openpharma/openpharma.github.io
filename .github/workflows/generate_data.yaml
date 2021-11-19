@@ -36,13 +36,14 @@ jobs:
           if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
           renv::restore()
 
-      - name: Deploy data
+      - name: Snakemake # python3 -m pip install --upgrade networkx pygraphvis
         run: |
-          Rscript create_data.R
+          python3 -m pip install snakemake
 
-      - name: Install dependencies
+
+      - name: Build
         run: |
-          rmarkdown::render("index.Rmd")
+          snakemake -j2  -F all
           dir.create("build")
           file.copy(from = "index.html", to = "build/index.html")
         shell: Rscript {0}

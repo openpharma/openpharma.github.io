@@ -19,10 +19,17 @@ library(purrr)
   
   data_gh_help <- read_rds("scratch/gh_issues_help.rds")
   
+  # s3
+  commits_s3 <- read_rds("scratch/commits_s3.rds")
+  people_s3 <- read_rds("scratch/people_s3.rds")
+  repos_s3 <- read_rds("scratch/repos_s3.rds")
+  
   # metacran
   data_metacran_repos <- read_rds("scratch/metacran_repos.rds") %>%
     unique() %>%
     select(-dependencies)
+  
+
   
 ## Repos ----------------------------
   ## Add CRAN to repos
@@ -53,6 +60,36 @@ library(purrr)
       by = "full_name"
     )
   
+# Merge with old data ----------------
+  
+  # Function to combine
+  repos <- data_repos %>%
+    mutate(source = "1 current pull") %>%
+    bind_rows(
+      repos_s3 %>% select(org:gh_language)
+    ) %>%
+    arrange(full_name, source) %>%
+    group_by(full_name) %>% slice(1) %>% select(-source)
+  
+  people <- data_gh_people %>%
+    mutate(
+      source = "1 current pull"
+    ) %>%
+    select(-email) %>% # remove personal info we do not need
+    bind_rows(
+      people_s3 %>% select(author:bio)
+    ) %>%
+    arrange(author, source) %>%
+    group_by(author) %>% slice(1) %>% select(-source)
+  
+  commits <- data_gh_commits %>%
+    mutate(source = "1 current pull") %>%
+    bind_rows(
+      commits_s3
+    ) %>%
+    arrange(sha, source) %>%
+    group_by(sha) %>% slice(1) %>% select(-source)
+  
 ## Add Github repo overlap
   get_overlap <- function(
     repo_name = "rtables", data
@@ -80,14 +117,14 @@ library(purrr)
   }
   
   
-  connections <- unique(data_gh_commits$full_name) %>%
-    map(get_overlap, data = data_gh_commits) %>%
+  connections <- unique(commits$full_name) %>%
+    map(get_overlap, data = commits) %>%
     bind_rows() %>%
     group_by(id) %>% slice(1) %>% ungroup()
   
   
   collab_tables <- NULL
-  for (i in unique(data_gh_commits$full_name)) {
+  for (i in unique(commits$full_name)) {
     list <- connections %>%
       filter(repo1 == i | repo2 == i) %>%
       mutate(
@@ -118,12 +155,12 @@ library(purrr)
   collab_tables <- collab_tables %>%
     filter(similar != "")
   
-  data_repos <- data_repos %>%
+  repos <- repos %>%
     left_join(collab_tables, by = "full_name")
   
   # Clean data repos
   
-  data_repos <- data_repos %>%
+  repos <- repos %>%
     mutate(
       imputed_description = case_when(
         !is.na(cran_description) ~ cran_description,
@@ -135,9 +172,9 @@ library(purrr)
   
 ## People ----------------------------
   ## Add Github repos
-  data_people <- data_gh_people %>%
+  people <- people %>%
     left_join(
-      data_gh_commits %>%
+      commits %>%
         group_by(author) %>%
         arrange(desc(datetime)) %>%
         summarise(
@@ -160,10 +197,12 @@ library(purrr)
   
   # Add CRAN
   # fuzzy join maintainer and email on name?
+
+
     
 ## Generate Health table ------------
   
-  data_health <- data_repos %>%
+  health <- repos %>%
     mutate(
       days_since_update = as.numeric(Sys.Date() - as.Date(gh_updated))
     ) %>%
@@ -193,7 +232,7 @@ library(purrr)
     ) %>%
     left_join(
       # increase in commits?
-      data_gh_commits %>%
+      commits %>%
         group_by(full_name) %>%
         mutate(
           date_numeric = as.numeric(date),
@@ -215,7 +254,7 @@ library(purrr)
     ) %>%
     left_join(
       # increase in people?
-      data_gh_commits %>%
+      commits %>%
         group_by(full_name) %>%
         summarise(
           authors_ever = n_distinct(author)
@@ -224,7 +263,7 @@ library(purrr)
     ) %>%
     left_join(
       # increase in people?
-      data_gh_commits %>%
+      commits %>%
         group_by(full_name) %>%
         mutate(
           date_numeric = as.numeric(date),
@@ -249,6 +288,7 @@ library(purrr)
       by = "full_name"
     ) %>%
     # Score
+    ungroup() %>%
     mutate(
       score = ifelse(days_since_update < 30*6,1,0),
       score = case_when(
@@ -287,7 +327,11 @@ library(purrr)
         is.na(abs_people)  ~ score,
         abs_people < 0 ~ score,
         TRUE ~ score + 1
-      ),
+      )
+    ) %>%
+    filter(!is.na(score)) %>%
+    mutate(
+      max = max(score, na.rm = TRUE),
       Health = round(100*score/max(score, na.rm = TRUE)),
       
       pretty_repo = glue(
@@ -312,139 +356,36 @@ library(purrr)
       desc(Health)
     ) 
   
-  data_repos <- data_repos %>%
-    left_join(data_health, by = "full_name")
+  repos <- repos %>%
+    select(org:imputed_description) %>% # fresh health
+    left_join(health, by = "full_name")
 
-## Merge with old data
-  # Get latest files
-  repos_s3 <- read_csv(
-    url("http://openpharma.s3-website.us-east-2.amazonaws.com/repos.csv"),
-    col_types = cols(
-      org = col_character(),
-      repo = col_character(),
-      lang = col_character(),
-      type = col_character(),
-      full_name = col_character(),
-      cran_title = col_character(),
-      cran_description = col_character(),
-      cran_license = col_character(),
-      cran_bugs = col_character(),
-      cran_maintainer = col_character(),
-      gh_description = col_character(),
-      gh_mb = col_double(),
-      gh_updated = col_character(),
-      gh_default_branch = col_character(),
-      gh_language = col_character(),
-      similar = col_logical(),
-      imputed_description = col_character(),
-      pretty_repo = col_character(),
-      Health = col_double(),
-      Commits = col_double(),
-      Contributors = col_double(),
-      `Days repo inactive` = col_double(),
-      `Median days open for current issues` = col_double(),
-      `Median days without comments on open issues` = col_double(),
-      `Median days to close issue` = col_double(),
-      `Change in frequency of commits` = col_double(),
-      `Change in active contributors` = col_double(),
-      `scratch/repos.csv` = col_logical()
-    ),
-    col_select = c(
-      org ,
-      repo ,
-      lang ,
-      type ,
-      full_name ,
-      cran_title ,
-      cran_description ,
-      cran_license ,
-      cran_bugs ,
-      cran_maintainer ,
-      gh_description ,
-      gh_mb,
-      gh_updated ,
-      gh_default_branch ,
-      gh_language ,
-      similar ,
-      imputed_description ,
-      pretty_repo ,
-      Health ,
-      Commits ,
-      Contributors ,
-      `Days repo inactive` ,
-      `Median days open for current issues` ,
-      `Median days without comments on open issues` ,
-      `Median days to close issue` ,
-      `Change in frequency of commits` ,
-      `Change in active contributors` ,
-      `scratch/repos.csv` 
-    )
-    ) %>%
-    mutate(source = "2 previous pull")
-  
-  people_s3 <- read_csv(url("http://openpharma.s3-website.us-east-2.amazonaws.com/people.csv")) %>%
-    mutate(source = "2 previous pull")
-  commits_s3 <- read_csv(
-    url("http://openpharma.s3-website.us-east-2.amazonaws.com/commits.csv"),
-    col_types = cols(
-      full_name = col_character(),
-      author = col_character(),
-      datetime = col_character(),
-      sha = col_character(),
-      commit_message = col_character(),
-      date = col_date(format = "")
-      ) , 
-    col_select = c(
-      full_name:date
-    )
-    ) %>%
-    mutate(source = "2 previous pull")
-  
-# Function to combine
-  repos <- data_repos %>%
-    mutate(source = "1 current pull") %>%
-    bind_rows(
-      repos_s3
-    ) %>%
-    arrange(full_name, source) %>%
-    group_by(full_name) %>% slice(1) %>% select(-source)
-  
-  people <- data_people %>%
+
+## Help
+  help <- data_gh_help %>%
     mutate(
-      days_last_active = as.numeric(days_last_active),
-      source = "1 current pull"
-      ) %>%
-    select(-email) %>% # remove personal info we do not need
-    bind_rows(
-      people_s3
-    ) %>%
-    arrange(author, source) %>%
-    group_by(author) %>% slice(1) %>% select(-source)
-  
-  commits <- data_gh_commits %>%
-    mutate(source = "1 current pull") %>%
-    bind_rows(
-      commits_s3
-    ) %>%
-    arrange(sha, source) %>%
-    group_by(sha) %>% slice(1) %>% select(-source)
+      pretty_url = glue('<a href="{url}">Issue link</a>')
+    )
+
   
 ## Things to upload
   write_csv(repos, glue("scratch/repos.csv"))
   write_csv(people,  glue("scratch/people.csv"))
-  write_csv(data_gh_help, glue("scratch/help.csv"))
+  write_csv(help, glue("scratch/help.csv"))
   write_csv(commits, glue("scratch/commits.csv"))
   
   write_rds(repos,  glue("scratch/repos.rds"))
   write_rds(people,  glue("scratch/people.rds"))
-  write_rds(data_gh_help, glue("scratch/help.rds"))
+  write_rds(help, glue("scratch/help.rds"))
   write_rds(commits, glue("scratch/commits.rds"))
   
-  write_csv(data_repos, glue("scratch/repos-{Sys.Date()}.csv"))
-  write_csv(data_people,  glue("scratch/people-{Sys.Date()}.csv"))
-  write_csv(data_gh_help, glue("scratch/help-{Sys.Date()}.csv"))
+  write_csv(repos, glue("scratch/repos-{Sys.Date()}.csv"))
+  write_csv(people,  glue("scratch/people-{Sys.Date()}.csv"))
+  write_csv(help, glue("scratch/help-{Sys.Date()}.csv"))
+  write_csv(commits, glue("scratch/commits-{Sys.Date()}.csv"))
   
-  write_rds(data_repos,  glue("scratch/repos-{Sys.Date()}.rds"))
-  write_rds(data_people,  glue("scratch/people-{Sys.Date()}.rds"))
-  write_rds(data_gh_help, glue("scratch/help-{Sys.Date()}.rds"))
+  write_rds(repos,  glue("scratch/repos-{Sys.Date()}.rds"))
+  write_rds(people,  glue("scratch/people-{Sys.Date()}.rds"))
+  write_rds(help, glue("scratch/help-{Sys.Date()}.rds"))
+  write_rds(commits, glue("scratch/commits-{Sys.Date()}.rds"))
   

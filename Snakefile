@@ -3,13 +3,24 @@ rule read_yaml:
     output: "scratch/yaml_repos.rds"
     shell: "Rscript scrape-packages.R"
     
+rule get_s3_old_data:
+    input: "scrape-s3.R"
+    output: 
+        "scratch/commits_s3.rds",
+        "scratch/people_s3.rds",
+        "scratch/repos_s3.rds"
+    shell: "Rscript scrape-s3.R"
+    
 rule get_metacran:
     input: "scrape-metacran.R", "scratch/yaml_repos.rds"
     output: "scratch/metacran_repos.rds"
     shell: "Rscript scrape-metacran.R"
     
 rule get_github:
-    input: "scrape-github.R", "scratch/yaml_repos.rds"
+    input: 
+        "scrape-github.R", 
+        "scratch/yaml_repos.rds",
+        "scratch/repos_s3.rds"
     output: 
         "scratch/gh_commits.rds",
         "scratch/gh_issues.rds",
@@ -25,7 +36,10 @@ rule merge_data:
         "scratch/gh_issues.rds",
         "scratch/gh_people.rds",
         "scratch/gh_repos.rds",
-        "scratch/metacran_repos.rds"
+        "scratch/metacran_repos.rds",
+        "scratch/commits_s3.rds",
+        "scratch/people_s3.rds",
+        "scratch/repos_s3.rds"
     output: 
         "scratch/repos.csv",
         "scratch/people.csv",

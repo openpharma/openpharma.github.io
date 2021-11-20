@@ -17,7 +17,10 @@ rule get_metacran:
     shell: "Rscript scrape-metacran.R"
     
 rule get_github:
-    input: "scrape-github.R", "scratch/yaml_repos.rds"
+    input: 
+        "scrape-github.R", 
+        "scratch/yaml_repos.rds",
+        "scratch/repos_s3.rds"
     output: 
         "scratch/gh_commits.rds",
         "scratch/gh_issues.rds",

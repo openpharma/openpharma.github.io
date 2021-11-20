@@ -6,3 +6,6 @@
 .DS_Store
 
 index.html
+
+.snakemake/
+scratch/

@@ -39,7 +39,7 @@ theme_set(theme_bw(base_size = 20))
 
 ```{r getdata}
 library(readr)
-  commits <- read_rds("scratch/gh_commits.rds")
+  commits <- read_rds("scratch/commits.rds")
   people <- read_rds("scratch/people.rds")
   repos <- read_rds("scratch/repos.rds")
   help <- read_rds("scratch/help.rds")
@@ -158,7 +158,7 @@ Tables {.tabset}
 ```{r}
 hlp_repo_details <- function(x){
   DT::datatable(
-      x %>%
+      x %>% ungroup %>%
           mutate(
             `Last updated` = as.Date(gh_updated),
             ) %>%
@@ -172,10 +172,33 @@ hlp_repo_details <- function(x){
           ), 
       rownames = FALSE,
       escape = FALSE,
-      fillContainer = TRUE)  
+      fillContainer = FALSE)  
 }
 
 hlp_repo_details(repos)
+```
+
+### Help needed
+    
+```{r}
+
+  DT::datatable(
+      help %>% ungroup %>%
+          arrange(desc(updated)) %>%
+          select(
+              Repo = full_name,
+              Link = pretty_url,
+              Created = created,
+              Comments = comments,
+              Updated = updated,
+              Title = title,
+              Description = body
+              
+          ), 
+      rownames = FALSE,
+      escape = FALSE,
+      fillContainer = FALSE)  
+
 ```
 
 ### People
@@ -209,7 +232,7 @@ DT::datatable(
       ) , 
     escape = FALSE,
     rownames = FALSE,
-    fillContainer = TRUE)
+    fillContainer = FALSE)
 ```
 
 ### Health
@@ -239,7 +262,7 @@ repos %>%
   DT::datatable(
     escape = FALSE,
     rownames = FALSE,
-    fillContainer = TRUE
+    fillContainer = FALSE
     )
 ```
 
@@ -314,7 +337,7 @@ plot <- commits %>%
   ) %>%
   left_join(
     tibble(
-  year_mon = seq.Date(range$min, range$max, by=1)
+  year_mon = seq.Date(min(range$min), max(range$max), by=1)
   ) %>%
   left_join(
     commits %>%
@@ -415,100 +438,119 @@ links on this page. See the Snakefile for an example of the build
 process
 
 The code that generates this data is in the repo
-[openpharma/openpharma.github.io](https://github.com/openpharma/openpharma.github.io)
+[openpharma/openpharma.github.io](https://github.com/openpharma/openpharma.github.io).
 
-<svg width="423pt" height="248pt"
- viewBox="0.00 0.00 423.26 247.62" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 243.619)">
+Right now the data is not stable - as it is planned to be used in the 
+upcoming pharmaverse.org website. Please reach out on the repo if you want to 
+use this data, or have ideas to improve / standardise it.
+
+<svg width="493pt" height="357pt"
+ viewBox="0.00 0.00 493.07 356.63" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 352.6306)">
 <title>snakemake_dag</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-243.619 419.259,-243.619 419.259,4 -4,4"/>
-<!-- 0 -->
-<g id="node1" class="node">
-<title>0</title>
-<path fill="none" stroke="#59d856" stroke-width="2" d="M83.519,-137.8095C83.519,-137.8095 12.16,-137.8095 12.16,-137.8095 6.16,-137.8095 .16,-131.8095 .16,-125.8095 .16,-125.8095 .16,-113.8095 .16,-113.8095 .16,-107.8095 6.16,-101.8095 12.16,-101.8095 12.16,-101.8095 83.519,-101.8095 83.519,-101.8095 89.519,-101.8095 95.519,-107.8095 95.519,-113.8095 95.519,-113.8095 95.519,-125.8095 95.519,-125.8095 95.519,-131.8095 89.519,-137.8095 83.519,-137.8095"/>
-<text text-anchor="middle" x="47.8395" y="-116.8095" font-family="sans" font-size="10.00" fill="#000000">Generate dashboard</text>
-</g>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-352.6306 489.0682,-352.6306 489.0682,4 -4,4"/>
 <!-- 1 -->
-<g id="node2" class="node">
+<g id="node1" class="node">
 <title>1</title>
-<path fill="none" stroke="#d8ac56" stroke-width="2" d="M186.4325,-137.8095C186.4325,-137.8095 148.9255,-137.8095 148.9255,-137.8095 142.9255,-137.8095 136.9255,-131.8095 136.9255,-125.8095 136.9255,-125.8095 136.9255,-113.8095 136.9255,-113.8095 136.9255,-107.8095 142.9255,-101.8095 148.9255,-101.8095 148.9255,-101.8095 186.4325,-101.8095 186.4325,-101.8095 192.4325,-101.8095 198.4325,-107.8095 198.4325,-113.8095 198.4325,-113.8095 198.4325,-125.8095 198.4325,-125.8095 198.4325,-131.8095 192.4325,-137.8095 186.4325,-137.8095"/>
-<text text-anchor="middle" x="167.679" y="-116.8095" font-family="sans" font-size="10.00" fill="#000000">Merge data</text>
-</g>
-<!-- 1&#45;&gt;0 -->
-<g id="edge1" class="edge">
-<title>1&#45;&gt;0</title>
-<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M136.8174,-119.8095C127.3575,-119.8095 116.6226,-119.8095 105.9636,-119.8095"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="105.8115,-116.3096 95.8115,-119.8095 105.8114,-123.3096 105.8115,-116.3096"/>
+<path fill="none" stroke="#56d89a" stroke-width="2" d="M83.519,-214.603C83.519,-214.603 12.16,-214.603 12.16,-214.603 6.16,-214.603 .16,-208.603 .16,-202.603 .16,-202.603 .16,-190.603 .16,-190.603 .16,-184.603 6.16,-178.603 12.16,-178.603 12.16,-178.603 83.519,-178.603 83.519,-178.603 89.519,-178.603 95.519,-184.603 95.519,-190.603 95.519,-190.603 95.519,-202.603 95.519,-202.603 95.519,-208.603 89.519,-214.603 83.519,-214.603"/>
+<text text-anchor="middle" x="47.8395" y="-193.603" font-family="sans" font-size="10.00" fill="#000000">Generate dashboard</text>
 </g>
 <!-- 2 -->
-<g id="node3" class="node">
+<g id="node2" class="node">
 <title>2</title>
-<path fill="none" stroke="#afd856" stroke-width="2" d="M403.22,-137.8095C403.22,-137.8095 339.376,-137.8095 339.376,-137.8095 333.376,-137.8095 327.376,-131.8095 327.376,-125.8095 327.376,-125.8095 327.376,-113.8095 327.376,-113.8095 327.376,-107.8095 333.376,-101.8095 339.376,-101.8095 339.376,-101.8095 403.22,-101.8095 403.22,-101.8095 409.22,-101.8095 415.22,-107.8095 415.22,-113.8095 415.22,-113.8095 415.22,-125.8095 415.22,-125.8095 415.22,-131.8095 409.22,-137.8095 403.22,-137.8095"/>
-<text text-anchor="middle" x="371.298" y="-116.8095" font-family="sans" font-size="10.00" fill="#000000">openpharma yaml</text>
+<path fill="none" stroke="#56d8d8" stroke-width="2" d="M364.3087,-232.1804C364.3087,-232.1804 326.8017,-232.1804 326.8017,-232.1804 320.8017,-232.1804 314.8017,-226.1804 314.8017,-220.1804 314.8017,-220.1804 314.8017,-208.1804 314.8017,-208.1804 314.8017,-202.1804 320.8017,-196.1804 326.8017,-196.1804 326.8017,-196.1804 364.3087,-196.1804 364.3087,-196.1804 370.3087,-196.1804 376.3087,-202.1804 376.3087,-208.1804 376.3087,-208.1804 376.3087,-220.1804 376.3087,-220.1804 376.3087,-226.1804 370.3087,-232.1804 364.3087,-232.1804"/>
+<text text-anchor="middle" x="345.5552" y="-211.1804" font-family="sans" font-size="10.00" fill="#000000">Merge data</text>
 </g>
 <!-- 2&#45;&gt;1 -->
-<g id="edge2" class="edge">
+<g id="edge1" class="edge">
 <title>2&#45;&gt;1</title>
-<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M327.3664,-119.8095C292.0849,-119.8095 242.9171,-119.8095 208.4898,-119.8095"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="208.3105,-116.3096 198.3105,-119.8095 208.3104,-123.3096 208.3105,-116.3096"/>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M314.8157,-212.3655C265.63,-209.4615 168.4259,-203.7225 105.868,-200.029"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="105.9455,-196.5276 95.7566,-199.432 105.5329,-203.5154 105.9455,-196.5276"/>
 </g>
 <!-- 3 -->
-<g id="node4" class="node">
+<g id="node3" class="node">
 <title>3</title>
-<path fill="none" stroke="#56a9d8" stroke-width="2" d="M284.4885,-239.619C284.4885,-239.619 254.4885,-239.619 254.4885,-239.619 248.4885,-239.619 242.4885,-233.619 242.4885,-227.619 242.4885,-227.619 242.4885,-215.619 242.4885,-215.619 242.4885,-209.619 248.4885,-203.619 254.4885,-203.619 254.4885,-203.619 284.4885,-203.619 284.4885,-203.619 290.4885,-203.619 296.4885,-209.619 296.4885,-215.619 296.4885,-215.619 296.4885,-227.619 296.4885,-227.619 296.4885,-233.619 290.4885,-239.619 284.4885,-239.619"/>
-<text text-anchor="middle" x="269.4885" y="-218.619" font-family="sans" font-size="10.00" fill="#000000">Github</text>
+<path fill="none" stroke="#97d856" stroke-width="2" d="M374.6819,-36C374.6819,-36 339.5938,-36 339.5938,-36 333.5938,-36 327.5938,-30 327.5938,-24 327.5938,-24 327.5938,-12 327.5938,-12 327.5938,-6 333.5938,0 339.5938,0 339.5938,0 374.6819,0 374.6819,0 380.6819,0 386.6819,-6 386.6819,-12 386.6819,-12 386.6819,-24 386.6819,-24 386.6819,-30 380.6819,-36 374.6819,-36"/>
+<text text-anchor="middle" x="357.1379" y="-15" font-family="sans" font-size="10.00" fill="#000000">Read yaml</text>
 </g>
-<!-- 2&#45;&gt;3 -->
-<g id="edge5" class="edge">
-<title>2&#45;&gt;3</title>
-<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M353.0965,-138.011C336.8816,-154.2259 312.9896,-178.1179 294.8937,-196.2138"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="292.1286,-194.0291 287.5324,-203.5751 297.0784,-198.9789 292.1286,-194.0291"/>
+<!-- 3&#45;&gt;2 -->
+<g id="edge2" class="edge">
+<title>3&#45;&gt;2</title>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M356.0689,-36.1045C354.0434,-70.4119 349.6331,-145.1109 347.2181,-186.016"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="343.7171,-185.9306 346.6215,-196.1196 350.7049,-186.3433 343.7171,-185.9306"/>
 </g>
 <!-- 4 -->
-<g id="node5" class="node">
+<g id="node4" class="node">
 <title>4</title>
-<path fill="none" stroke="#d85656" stroke-width="2" d="M284.4885,-36C284.4885,-36 254.4885,-36 254.4885,-36 248.4885,-36 242.4885,-30 242.4885,-24 242.4885,-24 242.4885,-12 242.4885,-12 242.4885,-6 248.4885,0 254.4885,0 254.4885,0 284.4885,0 284.4885,0 290.4885,0 296.4885,-6 296.4885,-12 296.4885,-12 296.4885,-24 296.4885,-24 296.4885,-30 290.4885,-36 284.4885,-36"/>
-<text text-anchor="middle" x="269.4885" y="-15" font-family="sans" font-size="10.00" fill="#000000">Metacran</text>
+<path fill="none" stroke="#d89556" stroke-width="2" d="M473.2002,-139.8815C473.2002,-139.8815 425.6732,-139.8815 425.6732,-139.8815 419.6732,-139.8815 413.6732,-133.8815 413.6732,-127.8815 413.6732,-127.8815 413.6732,-115.8815 413.6732,-115.8815 413.6732,-109.8815 419.6732,-103.8815 425.6732,-103.8815 425.6732,-103.8815 473.2002,-103.8815 473.2002,-103.8815 479.2002,-103.8815 485.2002,-109.8815 485.2002,-115.8815 485.2002,-115.8815 485.2002,-127.8815 485.2002,-127.8815 485.2002,-133.8815 479.2002,-139.8815 473.2002,-139.8815"/>
+<text text-anchor="middle" x="449.4367" y="-118.8815" font-family="sans" font-size="10.00" fill="#000000">Scrape github</text>
 </g>
-<!-- 2&#45;&gt;4 -->
+<!-- 3&#45;&gt;4 -->
 <g id="edge6" class="edge">
-<title>2&#45;&gt;4</title>
-<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M353.0965,-101.608C336.8816,-85.3931 312.9896,-61.5011 294.8937,-43.4052"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="297.0784,-40.6401 287.5324,-36.0439 292.1286,-45.5899 297.0784,-40.6401"/>
+<title>3&#45;&gt;4</title>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M373.2151,-36.0948C387.9479,-52.6765 409.9232,-77.4094 426.498,-96.0642"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="423.9755,-98.4947 433.234,-103.6455 429.2084,-93.8453 423.9755,-98.4947"/>
 </g>
-<!-- 3&#45;&gt;1 -->
+<!-- 5 -->
+<g id="node5" class="node">
+<title>5</title>
+<path fill="none" stroke="#d85656" stroke-width="2" d="M282.6051,-128.2989C282.6051,-128.2989 223.9076,-128.2989 223.9076,-128.2989 217.9076,-128.2989 211.9076,-122.2989 211.9076,-116.2989 211.9076,-116.2989 211.9076,-104.2989 211.9076,-104.2989 211.9076,-98.2989 217.9076,-92.2989 223.9076,-92.2989 223.9076,-92.2989 282.6051,-92.2989 282.6051,-92.2989 288.6051,-92.2989 294.6051,-98.2989 294.6051,-104.2989 294.6051,-104.2989 294.6051,-116.2989 294.6051,-116.2989 294.6051,-122.2989 288.6051,-128.2989 282.6051,-128.2989"/>
+<text text-anchor="middle" x="253.2564" y="-107.2989" font-family="sans" font-size="10.00" fill="#000000">Scrape metacran</text>
+</g>
+<!-- 3&#45;&gt;5 -->
+<g id="edge7" class="edge">
+<title>3&#45;&gt;5</title>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M336.6142,-36.2353C320.8211,-50.2675 298.8208,-69.8148 281.3873,-85.3045"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="278.8882,-82.843 273.7374,-92.1014 283.5376,-88.0758 278.8882,-82.843"/>
+</g>
+<!-- 4&#45;&gt;2 -->
 <g id="edge3" class="edge">
-<title>3&#45;&gt;1</title>
-<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M251.287,-203.4175C235.0721,-187.2026 211.1801,-163.3106 193.0842,-145.2147"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="195.2689,-142.4496 185.7229,-137.8534 190.3191,-147.3994 195.2689,-142.4496"/>
+<title>4&#45;&gt;2</title>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M428.9131,-140.1168C413.12,-154.149 391.1196,-173.6963 373.6861,-189.186"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="371.187,-186.7245 366.0362,-195.9829 375.8365,-191.9573 371.187,-186.7245"/>
 </g>
-<!-- 4&#45;&gt;1 -->
+<!-- 5&#45;&gt;2 -->
 <g id="edge4" class="edge">
-<title>4&#45;&gt;1</title>
-<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M251.287,-36.2015C235.0721,-52.4164 211.1801,-76.3084 193.0842,-94.4043"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="190.3191,-92.2196 185.7229,-101.7656 195.2689,-97.1694 190.3191,-92.2196"/>
+<title>5&#45;&gt;2</title>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M269.3336,-128.3936C284.0664,-144.9753 306.0417,-169.7083 322.6165,-188.3631"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="320.094,-190.7935 329.3525,-195.9444 325.3269,-186.1441 320.094,-190.7935"/>
+</g>
+<!-- 6 -->
+<g id="node6" class="node">
+<title>6</title>
+<path fill="none" stroke="#569ad8" stroke-width="2" d="M371.4864,-348.6306C371.4864,-348.6306 305.8734,-348.6306 305.8734,-348.6306 299.8734,-348.6306 293.8734,-342.6306 293.8734,-336.6306 293.8734,-336.6306 293.8734,-324.6306 293.8734,-324.6306 293.8734,-318.6306 299.8734,-312.6306 305.8734,-312.6306 305.8734,-312.6306 371.4864,-312.6306 371.4864,-312.6306 377.4864,-312.6306 383.4864,-318.6306 383.4864,-324.6306 383.4864,-324.6306 383.4864,-336.6306 383.4864,-336.6306 383.4864,-342.6306 377.4864,-348.6306 371.4864,-348.6306"/>
+<text text-anchor="middle" x="338.6799" y="-327.6306" font-family="sans" font-size="10.00" fill="#000000">Get historical data</text>
+</g>
+<!-- 6&#45;&gt;2 -->
+<g id="edge5" class="edge">
+<title>6&#45;&gt;2</title>
+<path fill="none" stroke="#c0c0c0" stroke-width="2" d="M339.7542,-312.4352C340.8642,-293.6346 342.6113,-264.0418 343.8984,-242.2421"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" stroke-width="2" points="347.3929,-242.4369 344.4885,-232.2479 340.4051,-242.0242 347.3929,-242.4369"/>
 </g>
 </g>
 </svg>
 
-
 These files contains *all* the data up to today, and was pulled ~ `r Sys.time()`.
 
-- Latest repo data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/repos.csv), [rds](http://openpharma.s3-website.us-east-2.amazonaws.com/repos.rds))
+- Latest repo data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/repos.csv))
 
-- Latest people data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/people.csv), [rds](http://openpharma.s3-website.us-east-2.amazonaws.com/people.rds))
+- Latest people data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/people.csv))
 
-- Latest who needs help data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/help.csv), [rds](http://openpharma.s3-website.us-east-2.amazonaws.com/help.rds))
+- Latest who needs help data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/help.csv))
+
+- Latest commits data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/commits.csv))
 
 ### Available data
 
 
 
 ```{r}
-dm(repos, people, help) %>%
+dm(repos, people, help, commits) %>%
   dm_add_pk(table = repos, columns = full_name) %>%
   dm_add_pk(table = people, columns = author) %>%
   dm_add_pk(table = help, columns = full_name) %>%
+  dm_add_pk(table = commits, columns = full_name) %>%
+  dm_add_fk(table = repos, columns = full_name, ref_table = commits) %>%
   dm_add_fk(table = repos, columns = full_name, ref_table = help) %>%
   dm_draw(
     view_type = "all", 

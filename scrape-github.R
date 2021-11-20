@@ -5,7 +5,7 @@ library(glue)
 library(GithubMetrics)
 library(purrr)
 
-lookback_days <- 3
+lookback_days <- 180
 
 ## Load data
 
@@ -42,7 +42,7 @@ lookback_days <- 3
 ## Scrape commits
   
   d_all_commits <- GithubMetrics::gh_commits_get(
-    d_github %>% dplyr::filter(mb > 1) %>% dplyr::pull(full_name), 
+    d_github %>% dplyr::filter(mb > 0) %>% dplyr::pull(full_name), 
     days_back = lookback_days
   ) 
   

@@ -32,15 +32,15 @@
     },
     "GithubMetrics": {
       "Package": "GithubMetrics",
-      "Version": "0.3.1",
+      "Version": "0.3.2",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "GithubMetrics",
       "RemoteUsername": "openpharma",
       "RemoteRef": "HEAD",
-      "RemoteSha": "8314933482a607d8fe8bfd750bb7f13b7912aad7",
-      "Hash": "54799cdd526d482295c3fa94f5e520e1"
+      "RemoteSha": "836c02ee1775a9e17cc6c9602a09b3158e68ab71",
+      "Hash": "1c3a390272052df61c3ffca3741bdea5"
     },
     "MASS": {
       "Package": "MASS",

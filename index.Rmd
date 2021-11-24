@@ -536,15 +536,16 @@ use this data, or have ideas to improve / standardise it.
 </g>
 </svg>
 
+
 These files contains *all* the data up to today, and was pulled ~ `r Sys.time()`.
 
-- Latest repo data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/repos.csv))
+- Latest repo data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/repos.csv), `r format(object.size(repos), units = "Mb")`)
 
-- Latest people data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/people.csv))
+- Latest people data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/people.csv), `r format(object.size(people), units = "Mb")`)
 
-- Latest who needs help data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/help.csv))
+- Latest who needs help data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/help.csv), `r format(object.size(help), units = "Mb")`)
 
-- Latest commits data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/commits.csv))
+- Latest commits data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/commits.csv), `r format(object.size(commits), units = "Mb")`)
 
 ### Available data
 

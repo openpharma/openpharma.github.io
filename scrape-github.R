@@ -5,7 +5,7 @@ library(glue)
 library(GithubMetrics)
 library(purrr)
 
-lookback_days <- 180
+lookback_days <- 10
 
 ## Load data
 

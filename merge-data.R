@@ -29,6 +29,9 @@ library(purrr)
     unique() %>%
     select(-dependencies)
   
+  # risk metric
+  riskmetric <- read_rds("scratch/riskmetric.rds")
+  
 
   
 ## Repos ----------------------------
@@ -43,7 +46,8 @@ library(purrr)
           cran_description = Description,
           cran_license = License,
           cran_bugs = BugReports,
-          cran_maintainer = Maintainer
+          cran_maintainer = Maintainer,
+          cran_version = Version
         ),
       by = "repo"
     ) %>%
@@ -57,6 +61,10 @@ library(purrr)
           gh_default_branch = default_branch,
           gh_language
         ),
+      by = "full_name"
+    ) %>%
+    left_join(
+      riskmetric,
       by = "full_name"
     )
   

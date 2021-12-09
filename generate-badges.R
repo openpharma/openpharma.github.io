@@ -32,6 +32,8 @@ badges <- repos %>%
       ))
     ),
     # risk metric --------------
+    riskmetric_score = round(riskmetric_score,2),
+    
     badge_riskmetric = case_when(
       riskmetric_score_quintile == 1 ~ as.character(glue(
         template, 

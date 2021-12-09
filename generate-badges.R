@@ -114,7 +114,8 @@ badges <- repos %>%
     full_name,
     badge_cran,
     badge_contributors,
-    badge_health
+    badge_health,
+    badge_riskmetric
   )
 
 

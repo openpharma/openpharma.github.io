@@ -50,11 +50,12 @@ rule merge_data:
         "scratch/people.csv",
         "scratch/help.csv",
         "scratch/repos.rds",
-        "scratch/people.rds"
+        "scratch/people.rds",
+        "scratch/commits.rds"
     shell: "Rscript merge-data.R"
     
 rule generate_badges:
-    input: "generate-badges.R", "scratch/commits.rds", "scratch/repos.rds"
+    input: "generate-badges.R", "scratch/repos.rds"
     output: "scratch/badges.csv"
     shell: "Rscript generate-badges.R"
     

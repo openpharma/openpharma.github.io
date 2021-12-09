@@ -3,7 +3,6 @@ library(dplyr)
 
 ## Load
 
-commits <- readRDS("scratch/commits.rds")
 repos <- readRDS("scratch/repos.rds")
 
 ## Write badges
@@ -12,6 +11,7 @@ template <- "https://img.shields.io/badge/{label}-{value}-{colour}"
 
 badges <- repos %>%
   mutate(
+    # CRAN --------------
     badge_cran = case_when(
       is.na(cran_version) ~ "",
       TRUE ~ as.character(glue(
@@ -21,6 +21,7 @@ badges <- repos %>%
         value = cran_version
       ))
     ),
+    # People --------------
     badge_contributors = case_when(
       is.na(Contributors) ~ "",
       TRUE ~ as.character(glue(
@@ -30,6 +31,40 @@ badges <- repos %>%
         value = Contributors
       ))
     ),
+    # risk metric --------------
+    badge_riskmetric = case_when(
+      riskmetric_score_quintile == 1 ~ as.character(glue(
+        template, 
+        label = "riskmetric",
+        colour = "red",
+        value = riskmetric_score
+      )),
+      riskmetric_score_quintile == 2 ~ as.character(glue(
+        template, 
+        label = "riskmetric",
+        colour = "orange",
+        value = riskmetric_score
+      )),
+      riskmetric_score_quintile == 3 ~ as.character(glue(
+        template, 
+        label = "riskmetric",
+        colour = "yellowgreen",
+        value = riskmetric_score
+      )),
+      riskmetric_score_quintile == 4 ~ as.character(glue(
+        template, 
+        label = "riskmetric",
+        colour = "green",
+        value = riskmetric_score
+      )),
+      riskmetric_score_quintile == 5 ~ as.character(glue(
+        template, 
+        label = "riskmetric",
+        colour = "brightgreen",
+        value = riskmetric_score
+      ))
+    ),
+    # health --------------
     badge_health = case_when(
       is.na(Health) ~ as.character(glue(
         template, 

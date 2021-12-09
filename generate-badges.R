@@ -134,36 +134,14 @@ Sys.setenv(
   "AWS_DEFAULT_REGION" = Sys.getenv("OPENPHARMA_AWS_DEFAULT_REGION")
 )
 
-# Write new files
-to_upload <- c(
-  "badges"
-)
 
-if (format(Sys.Date(), format = "%d") == "1") {
-  for (i in to_upload) {
-    put_object(
-      file = glue("scratch/{i}-{Sys.Date()}.csv"), 
-      object = glue("{i}-{Sys.Date()}.csv"), 
-      bucket = "openpharma",verbose = FALSE
-    )
-  }
-  
-  # for (i in to_upload) {
-  #   put_object(
-  #     file = glue("scratch/{i}-{Sys.Date()}.rds"), 
-  #     object = glue("{i}-{Sys.Date()}.rds"), 
-  #     bucket = "openpharma",verbose = FALSE
-  #   )
-  # }
-}
 
-for (i in to_upload) {
   put_object(
-    file = glue("scratch/{i}.csv"), 
-    object = glue("{i}.csv"), 
-    bucket = "openpharma",verbose = FALSE
+    file = glue("scratch/badges.csv"), 
+    object = glue("badges.csv"), 
+    bucket = "openpharma",verbose = TRUE
   )
-}
+
 
 # for (i in to_upload) {
 #   put_object(

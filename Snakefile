@@ -18,7 +18,7 @@ rule get_metacran:
     
 rule get_riskmetric:
     input: "scrape-riskmetric.R", "scratch/yaml_repos.rds"
-    output: "scratch/riskmetric.rds.rds"
+    output: "scratch/riskmetric.rds"
     shell: "Rscript scrape-riskmetric.R"
     
 rule get_github:
@@ -44,7 +44,8 @@ rule merge_data:
         "scratch/metacran_repos.rds",
         "scratch/commits_s3.rds",
         "scratch/people_s3.rds",
-        "scratch/repos_s3.rds"
+        "scratch/repos_s3.rds",
+        "scratch/riskmetric.rds"
     output: 
         "scratch/repos.csv",
         "scratch/people.csv",

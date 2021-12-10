@@ -18,7 +18,7 @@ rule get_metacran:
     
 rule get_riskmetric:
     input: "scrape-riskmetric.R", "scratch/yaml_repos.rds"
-    output: "scratch/riskmetric.rds.rds"
+    output: "scratch/riskmetric.rds"
     shell: "Rscript scrape-riskmetric.R"
     
 rule get_github:
@@ -44,17 +44,19 @@ rule merge_data:
         "scratch/metacran_repos.rds",
         "scratch/commits_s3.rds",
         "scratch/people_s3.rds",
-        "scratch/repos_s3.rds"
+        "scratch/repos_s3.rds",
+        "scratch/riskmetric.rds"
     output: 
         "scratch/repos.csv",
         "scratch/people.csv",
         "scratch/help.csv",
         "scratch/repos.rds",
-        "scratch/people.rds"
+        "scratch/people.rds",
+        "scratch/commits.rds"
     shell: "Rscript merge-data.R"
     
 rule generate_badges:
-    input: "generate-badges.R", "scratch/commits.rds", "scratch/repos.rds"
+    input: "generate-badges.R", "scratch/repos.rds"
     output: "scratch/badges.csv"
     shell: "Rscript generate-badges.R"
     

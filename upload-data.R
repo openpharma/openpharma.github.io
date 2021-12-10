@@ -71,8 +71,3 @@ for (i in to_upload) {
 #   )
 # }
 
-put_object(
-  file = glue("scratch/badges.csv"), 
-  object = glue("badges.csv"), 
-  bucket = "openpharma",verbose = TRUE
-)

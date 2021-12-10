@@ -124,14 +124,20 @@ badges <- repos %>%
 
 ## Upload
 
-write.csv(badges, glue("scratch/badges-{Sys.Date()}.csv"), row.names = FALSE)
+#write.csv(badges, glue("scratch/badges-{Sys.Date()}.csv"), row.names = FALSE)
 write.csv(badges, glue("scratch/badges.csv"), row.names = FALSE)
 
 
-# for (i in to_upload) {
-#   put_object(
-#     file = glue("scratch/{i}.rds"), 
-#     object = glue("{i}.rds"), 
-#     bucket = "openpharma",verbose = FALSE
-#   )
-# }
+
+library(aws.s3)
+Sys.setenv(
+  "AWS_ACCESS_KEY_ID" = Sys.getenv("OPENPHARMA_AWS_ACCESS_KEY_ID"),
+  "AWS_SECRET_ACCESS_KEY" = Sys.getenv("OPENPHARMA_AWS_SECRET_ACCESS_KEY"),
+  "AWS_DEFAULT_REGION" = Sys.getenv("OPENPHARMA_AWS_DEFAULT_REGION")
+)
+
+put_object(
+  file = glue("scratch/badges.csv"), 
+  object = glue("badges.csv"), 
+  bucket = "openpharma",verbose = TRUE
+)

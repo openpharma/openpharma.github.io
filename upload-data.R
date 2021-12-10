@@ -70,3 +70,9 @@ for (i in to_upload) {
 #     bucket = "openpharma",verbose = FALSE
 #   )
 # }
+
+put_object(
+  file = glue("scratch/badges.csv"), 
+  object = glue("badges.csv"), 
+  bucket = "openpharma",verbose = TRUE
+)

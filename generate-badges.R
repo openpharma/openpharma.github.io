@@ -38,13 +38,13 @@ badges <- repos %>%
       riskmetric_score_quintile == 1 ~ as.character(glue(
         template, 
         label = "riskmetric",
-        colour = "red",
+        colour = "brightgreen",
         value = riskmetric_score
       )),
       riskmetric_score_quintile == 2 ~ as.character(glue(
         template, 
         label = "riskmetric",
-        colour = "orange",
+        colour = "green",
         value = riskmetric_score
       )),
       riskmetric_score_quintile == 3 ~ as.character(glue(
@@ -56,13 +56,13 @@ badges <- repos %>%
       riskmetric_score_quintile == 4 ~ as.character(glue(
         template, 
         label = "riskmetric",
-        colour = "green",
+        colour = "orange",
         value = riskmetric_score
       )),
       riskmetric_score_quintile == 5 ~ as.character(glue(
         template, 
         label = "riskmetric",
-        colour = "brightgreen",
+        colour = "red",
         value = riskmetric_score
       ))
     ),
@@ -126,21 +126,6 @@ badges <- repos %>%
 
 write.csv(badges, glue("scratch/badges-{Sys.Date()}.csv"), row.names = FALSE)
 write.csv(badges, glue("scratch/badges.csv"), row.names = FALSE)
-
-library(aws.s3)
-Sys.setenv(
-  "AWS_ACCESS_KEY_ID" = Sys.getenv("OPENPHARMA_AWS_ACCESS_KEY_ID"),
-  "AWS_SECRET_ACCESS_KEY" = Sys.getenv("OPENPHARMA_AWS_SECRET_ACCESS_KEY"),
-  "AWS_DEFAULT_REGION" = Sys.getenv("OPENPHARMA_AWS_DEFAULT_REGION")
-)
-
-
-
-  put_object(
-    file = glue("scratch/badges.csv"), 
-    object = glue("badges.csv"), 
-    bucket = "openpharma",verbose = TRUE
-  )
 
 
 # for (i in to_upload) {

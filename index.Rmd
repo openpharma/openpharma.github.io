@@ -429,7 +429,7 @@ has been made (this site)
 Data
 =====================================    
    
-Row 
+Row {.tabset}
 -------------------------------------
 
 ### Details on the data pull
@@ -445,12 +445,24 @@ Right now the data is not stable - as it is planned to be used in the
 upcoming pharmaverse.org website. Please reach out on the repo if you want to 
 use this data, or have ideas to improve / standardise it.
 
+These files contains *all* the data up to today, and was pulled ~ `r Sys.time()`.
+
+- Latest repo data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/repos.csv), `r format(object.size(repos), units = "Mb")`)
+
+- Latest people data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/people.csv), `r format(object.size(people), units = "Mb")`)
+
+- Latest who needs help data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/help.csv), `r format(object.size(help), units = "Mb")`)
+
+- Latest commits data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/commits.csv), `r format(object.size(commits), units = "Mb")`)
+
+### Data generation DAG
+
 ```{r}
 grViz('
 digraph snakemake_dag {
-    ratio=0.4
+    ratio=0.6
     graph[bgcolor=white, margin=0];
-    node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
+    node[shape=box, style=rounded, fontname=sans, fontsize=7, penwidth=2];
     edge[penwidth=2, color=grey];
 	1[label = "website", color = "0.13 0.6 0.85", style="rounded"];
 	2[label = "merge", color = "0.27 0.6 0.85", style="rounded"];
@@ -471,16 +483,6 @@ digraph snakemake_dag {
 }
 ')
 ```
-
-These files contains *all* the data up to today, and was pulled ~ `r Sys.time()`.
-
-- Latest repo data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/repos.csv), `r format(object.size(repos), units = "Mb")`)
-
-- Latest people data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/people.csv), `r format(object.size(people), units = "Mb")`)
-
-- Latest who needs help data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/help.csv), `r format(object.size(help), units = "Mb")`)
-
-- Latest commits data ([csv](http://openpharma.s3-website.us-east-2.amazonaws.com/commits.csv), `r format(object.size(commits), units = "Mb")`)
 
 ### Available data
 

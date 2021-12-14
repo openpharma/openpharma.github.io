@@ -5,7 +5,7 @@ library(glue)
 library(GithubMetrics)
 library(purrr)
 
-lookback_days <- 10
+lookback_days <- 5
 
 ## Load data
 
@@ -144,4 +144,5 @@ lookback_days <- 10
   write_rds(d_github, "scratch/gh_repos.rds")
   write_rds(d_contributors, "scratch/gh_people.rds")
   write_rds(d_issues_labels_helpme,"scratch/gh_issues_help.rds")
+  
   

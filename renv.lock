@@ -255,6 +255,13 @@
       "Repository": "CRAN",
       "Hash": "6aa54f69598c32177e920eb3402e8293"
     },
+    "ctv": {
+      "Package": "ctv",
+      "Version": "0.8-5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "2998821a6f2ebb205b04f23c017fe5a6"
+    },
     "curl": {
       "Package": "curl",
       "Version": "4.3.2",

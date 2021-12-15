@@ -2,6 +2,8 @@ library(dplyr)
 library(tibble)
 library(readr)
 library(glue)
+library(ctv)
+library(pkgsearch)
 
 # Scrape ymls
 
@@ -39,13 +41,47 @@ library(glue)
     data_repos <- helper_extract_repos(d_scanme[i]) %>%
       bind_rows(data_repos)
   }
+  
+# ctv
+  get_packages <- function(x) {ctv:::.get_pkgs_from_ctv_or_repos(views = x)[[1]]}
+  
+  c(
+    get_packages("Bayesian"),get_packages("ClinicalTrials"),
+    get_packages("MissingData"),
+    get_packages("Survival")
+  ) %>%
+    cran_packages() %>%
+    select(Package,URL,BugReports) %>%
+    # try to fina a repo
+    mutate(
+      URL = gsub("^(.*?),.*", "\\1", URL),
+      BugReports = gsub("^(.*?),.*", "\\1", BugReports),
+      full_name = case_when(
+        startsWith(URL,"https://github.com/") ~ gsub("https://github.com/","",URL),
+        startsWith(BugReports,"https://github.com/") ~ gsub("https://github.com/","",BugReports)
+      ),
+      full_name = gsub("/issues","",full_name)
+    ) %>% 
+    select(Package, full_name) %>% na.omit() %>%
+    # should have one /
+    filter(grepl("/",full_name)) %>%
+    mutate(
+      org = dirname(full_name),
+      repo = basename(full_name),
+      lang = "r",
+      type = "ctv"
+    ) %>% select(org:type) %>%
+    bind_rows(
+      data_repos
+    ) -> data_repos
+
 
 # enrich data  
   
   data_repos <- data_repos %>%
     dplyr::mutate(
       full_name = glue::glue("{org}/{repo}")
-    )
+    ) %>% group_by(full_name) %>% slice(1) %>% ungroup()
   
 # Write to scratch
   write_rds(data_repos,file = "scratch/yaml_repos.rds")

@@ -25,7 +25,8 @@ rule get_github:
     input: 
         "scrape-github.R", 
         "scratch/yaml_repos.rds",
-        "scratch/commits_s3.rds"
+        "scratch/commits_s3.rds",
+        "scratch/people_s3.rds"
     output: 
         "scratch/gh_commits.rds",
         "scratch/gh_issues.rds",

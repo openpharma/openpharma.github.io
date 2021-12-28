@@ -5,12 +5,13 @@ library(glue)
 library(GithubMetrics)
 library(purrr)
 
-lookback_days <- 3
+lookback_days <- 2
 
 ## Load data
 
   data <- read_rds("scratch/yaml_repos.rds")
   commits_s3 <- read_rds("scratch/commits_s3.rds")
+  people_s3 <- read_rds("scratch/people_s3.rds")
 
 ## Helpers
 
@@ -127,7 +128,26 @@ lookback_days <- 3
       commits = dplyr::n()
     ) %>% na.omit()
   
-  d_user <- GithubMetrics::gh_user_get(d_contributors$author)
+  new_people <- d_contributors$author[!d_contributors$author %in% people_s3$author]
+  
+  d_user <- GithubMetrics::gh_user_get(new_people)
+  
+  d_user <- bind_rows(
+      d_user,
+      people_s3 %>%
+        select(
+          username = author,
+          avatar,
+          name,
+          blog,
+          joined,
+          last_active,
+          location ,
+          company ,
+          bio
+        )
+    )
+  
  
   d_contributors <- d_contributors %>%
     dplyr::left_join(

@@ -25,7 +25,7 @@ rule get_github:
     input: 
         "scrape-github.R", 
         "scratch/yaml_repos.rds",
-        "scratch/repos_s3.rds"
+        "scratch/commits_s3.rds"
     output: 
         "scratch/gh_commits.rds",
         "scratch/gh_issues.rds",
@@ -66,8 +66,8 @@ rule upload_data:
         "scratch/repos.csv",
         "scratch/people.csv",
         "scratch/help.csv",
-        "scratch/repos.rds",
-        "scratch/people.rds"
+        "scratch/health.csv",
+        "scratch/commits.csv"
     output: 
         "scratch/contents.rds"
     shell: "Rscript upload-data.R"

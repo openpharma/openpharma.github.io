@@ -18,6 +18,9 @@ atorus-research:
     lang: r
     type:
       - filing-tools
+  timber:
+    lang: r
+    type: filing-tools
 EliLillyCo:
   rfacts:
     lang: r
@@ -38,6 +41,12 @@ insightsengineering:
     lang: r
     type: 
       - filing-tools
+  teal:
+    lang: r
+    type: tlg
+  tern:
+    lang: r
+    type: tlg
   thevalidatoR:
     lang: r
     type: 

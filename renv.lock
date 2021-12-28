@@ -42,15 +42,15 @@
     },
     "GithubMetrics": {
       "Package": "GithubMetrics",
-      "Version": "0.3.2",
+      "Version": "0.3.4",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "GithubMetrics",
+      "RemoteRepo": "githubmetrics",
       "RemoteUsername": "openpharma",
       "RemoteRef": "HEAD",
-      "RemoteSha": "836c02ee1775a9e17cc6c9602a09b3158e68ab71",
-      "Hash": "1c3a390272052df61c3ffca3741bdea5"
+      "RemoteSha": "0aac2e41bdecd30b182eb6c1485ce0da1a416b16",
+      "Hash": "3e63166e62cea11012a3c1bf5cce269e"
     },
     "MASS": {
       "Package": "MASS",
@@ -255,6 +255,13 @@
       "Repository": "CRAN",
       "Hash": "6aa54f69598c32177e920eb3402e8293"
     },
+    "crul": {
+      "Package": "crul",
+      "Version": "1.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "607162d6f0d735014263cb0160c5be72"
+    },
     "ctv": {
       "Package": "ctv",
       "Version": "0.8-5",
@@ -421,6 +428,13 @@
       "Repository": "CRAN",
       "Hash": "38c2580abbda249bd6afeec00d14f531"
     },
+    "ghql": {
+      "Package": "ghql",
+      "Version": "0.1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "aa13ce03131717aa76a44259460ece6b"
+    },
     "gitcreds": {
       "Package": "gitcreds",
       "Version": "0.1.1",
@@ -430,10 +444,17 @@
     },
     "glue": {
       "Package": "glue",
-      "Version": "1.5.1",
+      "Version": "1.6.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "e01bc1fe0c20954ec97eac86640abc70"
+      "Hash": "b8bb7aaf248e45bac08ebed86f3a0aa4"
+    },
+    "graphql": {
+      "Package": "graphql",
+      "Version": "1.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "9f7d9c6426833d0cdfea726201589c42"
     },
     "gridExtra": {
       "Package": "gridExtra",
@@ -476,6 +497,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "76147821cd3fcd8c4b04e1ef0498e7fb"
+    },
+    "httpcode": {
+      "Package": "httpcode",
+      "Version": "0.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "13641a1c6d2cc98801b76764078e17ea"
     },
     "httpuv": {
       "Package": "httpuv",
@@ -626,10 +654,10 @@
     },
     "openssl": {
       "Package": "openssl",
-      "Version": "1.4.5",
+      "Version": "1.4.6",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "5406fd37ef0bf9b88c8a4f264d6ec220"
+      "Hash": "69fdf291af288f32fd4cd93315084ea8"
     },
     "pander": {
       "Package": "pander",

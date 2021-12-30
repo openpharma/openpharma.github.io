@@ -67,6 +67,7 @@ rule upload_data:
         "scratch/repos.csv",
         "scratch/people.csv",
         "scratch/help.csv",
+        "scratch/badges.csv",
         "scratch/health.csv",
         "scratch/commits.csv"
     output: 

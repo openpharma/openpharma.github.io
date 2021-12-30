@@ -36,7 +36,8 @@ saveRDS(contents,"scratch/contents.rds")
 
 # Write new files
 to_upload <- c(
-  "repos","people","health","help","commits"
+  "repos","people","health","help","commits",
+  "badges"
 )
 
 if (format(Sys.Date(), format = "%d") == "1") {

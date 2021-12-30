@@ -10,7 +10,7 @@ lookback_days <- 2
 ## Load data
 
   data <- read_rds("scratch/yaml_repos.rds")
-  commits_s3 <- read_rds("scratch/commits_s3.rds")
+  commits_s3 <- read_rds("scratch/commits_s3.rds") 
   people_s3 <- read_rds("scratch/people_s3.rds")
 
 ## Helpers
@@ -58,6 +58,13 @@ lookback_days <- 2
     dplyr::filter(!author %in% c(".gitconfig missing email","actions-user")) %>%
     dplyr::mutate(
       date = as.Date(datetime)
+    ) %>%
+    mutate(
+      # if an email not associated with github account
+      author_clean = case_when(
+        is.na(author) ~ sub("@.*", "",tolower(commit_email)),
+        TRUE ~ author
+      )
     )
 
 ## Scrape issues

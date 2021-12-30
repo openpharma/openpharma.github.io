@@ -37,6 +37,9 @@ Genentech:
     type:
       - clinical-statistics
 insightsengineering:
+  chevron:
+    lang: r
+    type: tlg
   r-license-report:
     lang: r
     type: 

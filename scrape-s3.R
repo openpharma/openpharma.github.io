@@ -112,7 +112,7 @@ commits_s3 <- read_csv(
     full_name = col_character(),
     author = col_character(),
     author = col_character(),
-    author_type = col_double(),
+    author_type = col_character(),
     commit_email = col_character(),
     datetime = col_character(),
     sha = col_character(),

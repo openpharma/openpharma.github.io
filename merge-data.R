@@ -265,7 +265,7 @@ library(purrr)
       commits %>%
         group_by(full_name) %>%
         summarise(
-          authors_ever = n_distinct(author)
+          authors_ever = n_distinct(author_clean)
         ),
       by = "full_name"
     ) %>%
@@ -280,7 +280,7 @@ library(purrr)
         ) %>%
         group_by(full_name,timing) %>%
         summarise(
-          active_people = n_distinct(author)
+          active_people = n_distinct(author_clean)
         ) %>% ungroup %>%
         pivot_wider(
           names_from = timing, values_from = active_people, values_fill = 0

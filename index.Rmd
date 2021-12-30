@@ -39,7 +39,8 @@ theme_set(theme_bw(base_size = 20))
 
 ```{r getdata}
 library(readr)
-  commits <- read_rds("scratch/commits.rds")
+  commits <- read_rds("scratch/commits.rds") %>%
+    mutate(author = author_clean)
   people <- read_rds("scratch/people.rds")
   repos <- read_rds("scratch/repos.rds")
   help <- read_rds("scratch/help.rds")

@@ -61,7 +61,8 @@ for (i in to_upload) {
   put_object(
     file = glue("scratch/{i}.csv"), 
     object = glue("{i}.csv"), 
-    bucket = "openpharma",verbose = FALSE
+    bucket = "openpharma",verbose = FALSE,
+    multipart = TRUE
   )
 }
 

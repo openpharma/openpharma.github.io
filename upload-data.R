@@ -29,7 +29,7 @@ contents <- get_bucket(bucket = "openpharma", parse_response = TRUE) %>%
     File:Updated
   )
 
-saveRDS("scratch/contents.rds")
+saveRDS(contents,"scratch/contents.rds")
 
 
 

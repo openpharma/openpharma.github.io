@@ -62,22 +62,23 @@ library(purrr)
           gh_language
         ),
       by = "full_name"
-    ) %>%
-    left_join(
-      riskmetric,
-      by = "full_name"
-    )
+    ) 
   
 # Merge with old data ----------------
   
   # Function to combine
   repos <- data_repos %>%
+    select(org:gh_language) %>%
     mutate(source = "1 current pull") %>%
     bind_rows(
       repos_s3 %>% select(org:gh_language)
     ) %>%
     arrange(full_name, source) %>%
-    group_by(full_name) %>% slice(1) %>% select(-source)
+    group_by(full_name) %>% slice(1) %>% select(-source) %>%
+    left_join(
+      riskmetric,
+      by = "full_name"
+    )
   
   people <- data_gh_people %>%
     mutate(
@@ -96,7 +97,13 @@ library(purrr)
       commits_s3
     ) %>%
     arrange(sha, source) %>%
-    group_by(sha) %>% slice(1) %>% select(-source)
+    group_by(sha) %>% slice(1) %>% select(-source) %>%
+    mutate(
+      author_clean = case_when(
+        is.na(author) ~ sub("@.*", "",tolower(commit_email)),
+        TRUE ~ author
+      )
+    )
   
 ## Add Github repo overlap
   get_overlap <- function(

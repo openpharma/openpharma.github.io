@@ -51,6 +51,7 @@ rule merge_data:
         "scratch/repos.csv",
         "scratch/people.csv",
         "scratch/help.csv",
+        "scratch/help.rds",
         "scratch/repos.rds",
         "scratch/people.rds",
         "scratch/commits.rds",

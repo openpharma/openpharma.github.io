@@ -51,9 +51,11 @@ rule merge_data:
         "scratch/repos.csv",
         "scratch/people.csv",
         "scratch/help.csv",
+        "scratch/help.rds",
         "scratch/repos.rds",
         "scratch/people.rds",
-        "scratch/commits.rds"
+        "scratch/commits.rds",
+        "scratch/commits.csv"
     shell: "Rscript merge-data.R"
     
 rule generate_badges:
@@ -67,7 +69,7 @@ rule upload_data:
         "scratch/repos.csv",
         "scratch/people.csv",
         "scratch/help.csv",
-        "scratch/health.csv",
+        "scratch/badges.csv",
         "scratch/commits.csv"
     output: 
         "scratch/contents.rds"
@@ -76,9 +78,8 @@ rule upload_data:
 rule generate_website:
     input: 
         "index.Rmd", 
-        "scratch/repos.csv",
-        "scratch/people.csv",
-        "scratch/help.csv",
+        "scratch/commits.rds",
+        "scratch/help.rds",
         "scratch/badges.csv",
         "scratch/repos.rds",
         "scratch/people.rds"
@@ -95,4 +96,5 @@ rule generate_website:
 
 rule all:
     input: 
-        "index.html"
+        "index.html",
+        "scratch/contents.rds"

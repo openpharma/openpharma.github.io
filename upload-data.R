@@ -36,7 +36,8 @@ saveRDS(contents,"scratch/contents.rds")
 
 # Write new files
 to_upload <- c(
-  "repos","people","health","help","commits"
+  "repos","people","help","commits",
+  "badges"
 )
 
 if (format(Sys.Date(), format = "%d") == "1") {
@@ -58,10 +59,12 @@ if (format(Sys.Date(), format = "%d") == "1") {
 }
 
 for (i in to_upload) {
+  message("Uploading ",i)
   put_object(
     file = glue("scratch/{i}.csv"), 
     object = glue("{i}.csv"), 
-    bucket = "openpharma",verbose = FALSE,
+    bucket = "openpharma",
+    verbose = TRUE,
     multipart = TRUE
   )
 }

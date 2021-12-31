@@ -96,4 +96,5 @@ rule generate_website:
 
 rule all:
     input: 
-        "index.html"
+        "index.html",
+        "scratch/contents.rds"

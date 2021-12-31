@@ -52,7 +52,6 @@ rule merge_data:
         "scratch/people.csv",
         "scratch/help.csv",
         "scratch/repos.rds",
-        "scratch/health.csv",
         "scratch/people.rds",
         "scratch/commits.rds",
         "scratch/commits.csv"
@@ -70,7 +69,6 @@ rule upload_data:
         "scratch/people.csv",
         "scratch/help.csv",
         "scratch/badges.csv",
-        "scratch/health.csv",
         "scratch/commits.csv"
     output: 
         "scratch/contents.rds"
@@ -79,9 +77,8 @@ rule upload_data:
 rule generate_website:
     input: 
         "index.Rmd", 
-        "scratch/repos.csv",
-        "scratch/people.csv",
-        "scratch/help.csv",
+        "scratch/commits.rds",
+        "scratch/help.rds",
         "scratch/badges.csv",
         "scratch/repos.rds",
         "scratch/people.rds"

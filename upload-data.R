@@ -36,7 +36,7 @@ saveRDS(contents,"scratch/contents.rds")
 
 # Write new files
 to_upload <- c(
-  "repos","people","health","help","commits",
+  "repos","people","help","commits",
   "badges"
 )
 

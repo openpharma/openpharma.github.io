@@ -1,6 +1,8 @@
 library(readr)
 library(dplyr)
 
+options(timeout = 3600) 
+
 # Get latest files
 repos_s3 <- read_csv(
   url("http://openpharma.s3-website.us-east-2.amazonaws.com/repos.csv"),
@@ -106,8 +108,13 @@ people_s3 <- read_csv(
   ) %>%
   mutate(source = "2 previous pull")
 
+download.file(
+  url = "http://openpharma.s3-website.us-east-2.amazonaws.com/commits.csv",
+  destfile = "temp_commits.csv"
+)
+
 commits_s3 <- read_csv(
-  url("http://openpharma.s3-website.us-east-2.amazonaws.com/commits.csv"),
+  "temp_commits.csv",
   col_types = cols(
     full_name = col_character(),
     author = col_character(),

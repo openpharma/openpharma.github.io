@@ -9,3 +9,5 @@ index.html
 
 .snakemake/
 scratch/
+
+temp_commits.csv

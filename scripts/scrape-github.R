@@ -72,7 +72,8 @@ lookback_days <- 2
       d_github %>% dplyr::filter(mb > 1) %>% dplyr::pull(full_name), 
       unique(commits_s3$full_name)
     ),
-    days_back = 365
+    days_back = 365, .token = Sys.getenv("OPENPHARMA_PAT")
+    
     ) %>%
     dplyr::filter(!author %in% c(".gitconfig missing email","actions-user")) %>%
     dplyr::mutate(
@@ -100,7 +101,8 @@ lookback_days <- 2
         unique(commits_s3$full_name)
       ),
       days_back = 365,
-      state = "open"
+      state = "open", 
+      .token = Sys.getenv("OPENPHARMA_PAT")
     )
   )
   
@@ -135,7 +137,8 @@ lookback_days <- 2
   
   new_people <- d_contributors$author[!d_contributors$author %in% people_s3$author]
   
-  d_user <- GithubMetrics::gh_user_get(new_people)
+  d_user <- GithubMetrics::gh_user_get(new_people, 
+                                       .token = Sys.getenv("OPENPHARMA_PAT"))
   
   d_user <- bind_rows(
       d_user,

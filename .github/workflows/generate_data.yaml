@@ -13,7 +13,6 @@ jobs:
     runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GH_OPENPHARMA }}
-      OPENPHARMA_PAT: ${{ secrets.OPENPHARMA_PAT }}
       RENV_PATHS_ROOT: ~/.local/share/renv
     steps:
       - uses: actions/checkout@v2
@@ -49,6 +48,7 @@ jobs:
           OPENPHARMA_AWS_ACCESS_KEY_ID: ${{ secrets.OPENPHARMA_AWS_ACCESS_KEY_ID }}
           OPENPHARMA_AWS_SECRET_ACCESS_KEY: ${{ secrets.OPENPHARMA_AWS_SECRET_ACCESS_KEY }}
           OPENPHARMA_AWS_DEFAULT_REGION: ${{ secrets.OPENPHARMA_AWS_DEFAULT_REGION }}
+          OPENPHARMA_PAT: ${{ secrets.OPENPHARMA_PAT }}
         run: |
           snakemake -j2  -F merge_data
           
@@ -61,6 +61,7 @@ jobs:
           OPENPHARMA_AWS_ACCESS_KEY_ID: ${{ secrets.OPENPHARMA_AWS_ACCESS_KEY_ID }}
           OPENPHARMA_AWS_SECRET_ACCESS_KEY: ${{ secrets.OPENPHARMA_AWS_SECRET_ACCESS_KEY }}
           OPENPHARMA_AWS_DEFAULT_REGION: ${{ secrets.OPENPHARMA_AWS_DEFAULT_REGION }}
+          OPENPHARMA_PAT: ${{ secrets.OPENPHARMA_PAT }}
         run: |
           snakemake -j2  -F all
           mkdir build

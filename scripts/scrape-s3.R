@@ -108,6 +108,7 @@ people_s3 <- read_csv(
   ) %>%
   mutate(source = "2 previous pull")
 
+# commits in two parts due to size
 download.file(
   url = "http://openpharma.s3-website.us-east-2.amazonaws.com/commits.csv",
   destfile = "temp_commits.csv"

@@ -16,7 +16,7 @@ lookback_days <- 2
 ## Helpers
 
   hlp_org_repos <- function(x){
-    GithubMetrics::gh_repos_get(x) %>%
+    GithubMetrics::gh_repos_get(x, .token = Sys.getenv("OPENPHARMA_PAT")) %>%
       GithubMetrics::gh_repos_clean(.)
   }
 
@@ -43,11 +43,9 @@ lookback_days <- 2
 ## Scrape commits
   
   d_all_commits <- GithubMetrics::gh_commits_get(
-    d_github %>% 
-      dplyr::filter(mb > 0) %>% 
-      dplyr::filter(basename(full_name) %in% data$repo) %>%
-      dplyr::pull(full_name), 
-    days_back = lookback_days
+    data$full_name, 
+    days_back = lookback_days,
+    .token = Sys.getenv("OPENPHARMA_PAT")
   ) 
   
   if (nrow(d_all_commits) == 0) {

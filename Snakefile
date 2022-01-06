@@ -1,29 +1,31 @@
 rule read_yaml:
-    input: "scrape-packages.R"
+    input: 
+        "scripts/scrape-packages.R",
+        "openpharma_included.yaml"
     output: "scratch/yaml_repos.rds"
-    shell: "Rscript scrape-packages.R"
+    shell: "Rscript scripts/scrape-packages.R"
     
 rule get_s3_old_data:
-    input: "scrape-s3.R"
+    input: "scripts/scrape-s3.R"
     output: 
         "scratch/commits_s3.rds",
         "scratch/people_s3.rds",
         "scratch/repos_s3.rds"
-    shell: "Rscript scrape-s3.R"
+    shell: "Rscript scripts/scrape-s3.R"
     
 rule get_metacran:
-    input: "scrape-metacran.R", "scratch/yaml_repos.rds"
+    input: "scripts/scrape-metacran.R", "scratch/yaml_repos.rds"
     output: "scratch/metacran_repos.rds"
-    shell: "Rscript scrape-metacran.R"
+    shell: "Rscript scripts/scrape-metacran.R"
     
 rule get_riskmetric:
-    input: "scrape-riskmetric.R", "scratch/yaml_repos.rds"
+    input: "scripts/scrape-riskmetric.R", "scratch/yaml_repos.rds"
     output: "scratch/riskmetric.rds"
-    shell: "Rscript scrape-riskmetric.R"
+    shell: "Rscript scripts/scrape-riskmetric.R"
     
 rule get_github:
     input: 
-        "scrape-github.R", 
+        "scripts/scrape-github.R", 
         "scratch/yaml_repos.rds",
         "scratch/commits_s3.rds",
         "scratch/people_s3.rds"
@@ -32,16 +34,18 @@ rule get_github:
         "scratch/gh_issues.rds",
         "scratch/gh_people.rds",
         "scratch/gh_repos.rds"
-    shell: "Rscript scrape-github.R"
+        "scratch/gh_issues_help.rds"
+    shell: "Rscript scripts/scrape-github.R"
     
 rule merge_data:
     input: 
-        "merge-data.R", 
+        "scripts/merge-data.R", 
         "scratch/yaml_repos.rds",
         "scratch/gh_commits.rds",
         "scratch/gh_issues.rds",
         "scratch/gh_people.rds",
         "scratch/gh_repos.rds",
+        "scratch/gh_issues_help.rds",
         "scratch/metacran_repos.rds",
         "scratch/commits_s3.rds",
         "scratch/people_s3.rds",
@@ -56,16 +60,16 @@ rule merge_data:
         "scratch/people.rds",
         "scratch/commits.rds",
         "scratch/commits.csv"
-    shell: "Rscript merge-data.R"
+    shell: "Rscript scripts/merge-data.R"
     
 rule generate_badges:
-    input: "generate-badges.R", "scratch/repos.rds"
+    input: "scripts/generate-badges.R", "scratch/repos.rds"
     output: "scratch/badges.csv"
-    shell: "Rscript generate-badges.R"
+    shell: "Rscript scripts/generate-badges.R"
     
 rule upload_data:
     input: 
-        "upload-data.R", 
+        "scripts/upload-data.R", 
         "scratch/repos.csv",
         "scratch/people.csv",
         "scratch/help.csv",
@@ -73,11 +77,11 @@ rule upload_data:
         "scratch/commits.csv"
     output: 
         "scratch/contents.rds"
-    shell: "Rscript upload-data.R"
+    shell: "Rscript scripts/upload-data.R"
     
 rule generate_website:
     input: 
-        "index.Rmd", 
+        "scripts/index.Rmd", 
         "scratch/commits.rds",
         "scratch/help.rds",
         "scratch/badges.csv",

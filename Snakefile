@@ -33,7 +33,7 @@ rule get_github:
         "scratch/gh_commits.rds",
         "scratch/gh_issues.rds",
         "scratch/gh_people.rds",
-        "scratch/gh_repos.rds"
+        "scratch/gh_repos.rds",
         "scratch/gh_issues_help.rds"
     shell: "Rscript scripts/scrape-github.R"
     

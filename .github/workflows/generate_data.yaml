@@ -1,11 +1,12 @@
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * *" # daily
   push:
     branches:
-      - master
+      - main  # Set a branch to deploy
+      - develop # Note has logic around deployment
 
-name: production
+name: build
 
 jobs:
   production:
@@ -40,19 +41,35 @@ jobs:
         run: |
           python3 -m pip install snakemake
 
-
-      - name: Build
+# IF develop
+      - name: Build dev
+        if: ${{ github.ref == 'refs/heads/develop' }}
         env:
           OPENPHARMA_AWS_ACCESS_KEY_ID: ${{ secrets.OPENPHARMA_AWS_ACCESS_KEY_ID }}
           OPENPHARMA_AWS_SECRET_ACCESS_KEY: ${{ secrets.OPENPHARMA_AWS_SECRET_ACCESS_KEY }}
           OPENPHARMA_AWS_DEFAULT_REGION: ${{ secrets.OPENPHARMA_AWS_DEFAULT_REGION }}
+          OPENPHARMA_PAT: ${{ secrets.OPENPHARMA_PAT }}
+        run: |
+          snakemake -j2  -F merge_data
+          
+          
+        
+# IF main
+      - name: Build prod 
+        if: ${{ github.ref == 'refs/heads/main' }}
+        env:
+          OPENPHARMA_AWS_ACCESS_KEY_ID: ${{ secrets.OPENPHARMA_AWS_ACCESS_KEY_ID }}
+          OPENPHARMA_AWS_SECRET_ACCESS_KEY: ${{ secrets.OPENPHARMA_AWS_SECRET_ACCESS_KEY }}
+          OPENPHARMA_AWS_DEFAULT_REGION: ${{ secrets.OPENPHARMA_AWS_DEFAULT_REGION }}
+          OPENPHARMA_PAT: ${{ secrets.OPENPHARMA_PAT }}
         run: |
           snakemake -j2  -F all
           mkdir build
           cp index.html ./build
-        
+          
       - name: Deploy site 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: build # The folder the action should deploy.

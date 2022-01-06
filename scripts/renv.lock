@@ -4,7 +4,7 @@
     "Repositories": [
       {
         "Name": "CRAN",
-        "URL": "https://cloud.r-project.org"
+        "URL": "https://cran.rstudio.com"
       }
     ]
   },
@@ -86,6 +86,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "dab19adae4440ae55aa8a9d238b246bb"
+    },
+    "arrow": {
+      "Package": "arrow",
+      "Version": "6.0.0.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "49d65e164690a10399c73122af1ba14e"
     },
     "askpass": {
       "Package": "askpass",
@@ -359,6 +366,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "77bd60a6157420d4ffa93b27cf6a58b8"
+    },
+    "filelock": {
+      "Package": "filelock",
+      "Version": "1.0.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "38ec653c2613bed60052ba3787bd8a2c"
     },
     "flexdashboard": {
       "Package": "flexdashboard",
@@ -665,6 +679,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "60200b6aa32314ac457d3efbb5ccbd98"
+    },
+    "pins": {
+      "Package": "pins",
+      "Version": "1.0.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "7df1a5930c4b7578f31a18abfa9b0ae2"
     },
     "pkgbuild": {
       "Package": "pkgbuild",

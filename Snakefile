@@ -81,7 +81,7 @@ rule upload_data:
     
 rule generate_website:
     input: 
-        "scripts/index.Rmd", 
+        "index.Rmd", 
         "scratch/commits.rds",
         "scratch/help.rds",
         "scratch/badges.csv",

@@ -3,7 +3,7 @@ on:
     - cron: "0 0 * * *" # daily
   push:
     branches:
-      - main  # Set a branch to deploy
+      - master  # Set a branch to deploy
       - develop # Note has logic around deployment
 
 name: build
@@ -56,7 +56,7 @@ jobs:
         
 # IF main
       - name: Build prod 
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/master' }}
         env:
           OPENPHARMA_AWS_ACCESS_KEY_ID: ${{ secrets.OPENPHARMA_AWS_ACCESS_KEY_ID }}
           OPENPHARMA_AWS_SECRET_ACCESS_KEY: ${{ secrets.OPENPHARMA_AWS_SECRET_ACCESS_KEY }}

@@ -59,6 +59,11 @@ insightsengineering:
     lang: r
     type:
       - clinical-statistics
+medianasoft:
+  MedianaDesigner:
+    lang: r
+    type:
+      - clinical-statistics
 Merck:
   pkglite:
     lang: r

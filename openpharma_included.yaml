@@ -36,6 +36,10 @@ Genentech:
     lang: r
     type:
       - clinical-statistics
+GSK-Biostatistics:
+  neointerface:
+    lang: python
+    type: filing-tools
 insightsengineering:
   chevron:
     lang: r

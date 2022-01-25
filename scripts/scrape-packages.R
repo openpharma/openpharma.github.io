@@ -45,7 +45,7 @@ library(pkgsearch)
 # ctv
   get_packages <- function(x) {ctv:::.get_pkgs_from_ctv_or_repos(views = x)[[1]]}
   
-  c(
+  ctv <- c(
     get_packages("Bayesian"),get_packages("ClinicalTrials"),
     get_packages("MissingData"),
     get_packages("Survival")
@@ -71,6 +71,14 @@ library(pkgsearch)
       lang = "r",
       type = "ctv"
     ) %>% select(org:type) %>%
+    # IR REPO IN YAML - DROP!!! 
+    # YAML takes prominence over ctv
+    filter(
+      !tolower(repo) %in% tolower(data_repos$repo) 
+    )
+  
+  
+  ctv %>%
     bind_rows(
       data_repos
     ) -> data_repos

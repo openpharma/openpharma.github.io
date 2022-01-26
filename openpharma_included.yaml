@@ -139,11 +139,14 @@ openpharma:
     lang: r
     type:
       - tlg
-
+pharmaverse:
+  admiral:
+    lang: r
+    type: 
 pharmaR:
   riskmetric:
     lang: r
-    type:
+    type: filing-tools
 phuse-org:
   aesummaries:
     lang: r

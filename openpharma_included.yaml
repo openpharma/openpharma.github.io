@@ -36,6 +36,10 @@ Genentech:
     lang: r
     type:
       - clinical-statistics
+GraphicsPrinciples:
+  CheatSheet:
+    lang: r
+    type: 
 GSK-Biostatistics:
   neointerface:
     lang: python

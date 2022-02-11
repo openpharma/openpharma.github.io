@@ -115,4 +115,5 @@ rule os_health:
 rule all:
     input: 
         "index.html",
+        "os-health.html",
         "scratch/contents.rds"

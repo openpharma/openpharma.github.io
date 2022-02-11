@@ -25,15 +25,9 @@ repos_s3 <- read_csv(
     similar = col_logical(),
     imputed_description = col_character(),
     pretty_repo = col_character(),
-    Health = col_double(),
+    os_health = col_double(),
     Commits = col_double(),
-    Contributors = col_double(),
-    `Days repo inactive` = col_double(),
-    `Median days open for current issues` = col_double(),
-    `Median days without comments on open issues` = col_double(),
-    `Median days to close issue` = col_double(),
-    `Change in frequency of commits` = col_double(),
-    `Change in active contributors` = col_double()
+    Contributors = col_double()
   ),
   col_select = c(
     org ,
@@ -54,15 +48,9 @@ repos_s3 <- read_csv(
     similar ,
     imputed_description ,
     pretty_repo ,
-    Health ,
+    os_health ,
     Commits ,
-    Contributors ,
-    `Days repo inactive` ,
-    `Median days open for current issues` ,
-    `Median days without comments on open issues` ,
-    `Median days to close issue` ,
-    `Change in frequency of commits` ,
-    `Change in active contributors` 
+    Contributors 
   )
 ) %>%
   mutate(source = "2 previous pull")

@@ -243,22 +243,20 @@ DT::datatable(
 # kaplan mier estimate?
 
 
-repos %>%
+repos %>% ungroup %>%
+  mutate(
+    riskmetric_score = round(riskmetric_score,2)
+  ) %>%
   # tidy title
   select(
     Repo = pretty_repo,
-    Health,
+    `OS Health` = os_health,
+    `riskmetric` = riskmetric_score,
     Commits,
-    Contributors,
-    `Days repo inactive`,
-    `Median days open for current issues`,
-    `Median days without comments on open issues`,
-    `Median days to close issue`,
-    `Change in frequency of commits`,
-    `Change in active contributors`
+    Contributors
   ) %>%
   arrange(
-    desc(Health)
+    desc(`OS Health`)
   ) %>%
   # table it
   DT::datatable(

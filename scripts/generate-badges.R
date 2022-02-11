@@ -68,47 +68,47 @@ badges <- repos %>%
     ),
     # health --------------
     badge_health = case_when(
-      is.na(Health) ~ as.character(glue(
+      is.na(os_health) ~ as.character(glue(
         template, 
-        label = "Health",
+        label = "OS Health",
         colour = "red",
         value = 0
       )),
-      Health > 90 ~ as.character(glue(
+      os_health > 90 ~ as.character(glue(
         template, 
-        label = "Health",
+        label = "OS Health",
         colour = "brightgreen",
-        value = Health
+        value = os_health
       )),
-      Health > 80 ~ as.character(glue(
+      os_health > 80 ~ as.character(glue(
         template, 
-        label = "Health",
+        label = "OS Health",
         colour = "green",
-        value = Health
+        value = os_health
       )),
-      Health > 60 ~ as.character(glue(
+      os_health > 60 ~ as.character(glue(
         template, 
-        label = "Health",
+        label = "OS Health",
         colour = "yellowgreen",
-        value = Health
+        value = os_health
       )),
-      Health > 50 ~ as.character(glue(
+      os_health > 50 ~ as.character(glue(
         template, 
-        label = "Health",
+        label = "OS Health",
         colour = "yellow",
-        value = Health
+        value = os_health
       )),
-      Health > 40 ~ as.character(glue(
+      os_health > 40 ~ as.character(glue(
         template, 
-        label = "Health",
+        label = "OS Health",
         colour = "orange",
-        value = Health
+        value = os_health
       )),
       TRUE ~ as.character(glue(
         template, 
-        label = "Health",
+        label = "OS Health",
         colour = "red",
-        value = Health
+        value = os_health
       ))
     )
   ) %>%

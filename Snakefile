@@ -96,6 +96,20 @@ rule generate_website:
             output_dir = '.'
         )"
         """
+        
+rule os_health:
+    input: 
+        "os-health.Rmd", 
+        "scratch/repos.rds"
+    output: 
+        report("os-health.html")
+    shell: 
+        """
+        Rscript -e "rmarkdown::render(
+            'os-health.Rmd', 
+            output_dir = '.'
+        )"
+        """
 
 
 rule all:

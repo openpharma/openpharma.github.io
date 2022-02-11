@@ -1,0 +1,41 @@
+---
+title: "OS Health"
+author: "openpharma.github.io"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+## Context
+
+It is important to note that ‘OS Health’ is not equivalent to metrics assessed in riskmetric. An example being a stable and mature statistical R package that could be orphaned, or stable enough activity has largely ended. In terms of ‘OS Health’, the developer community is not currently active and developing - but the package itself could still be robust and meeting all it’s intended use cases (OS Health and the scope of riskmetric would overlap though if the package has stale open issues that are being ignored).
+
+See [`GithubMetrics`](https://openpharma.github.io/GithubMetrics/articles/os-health.html) for 
+more information.
+
+
+
+```{r load, echo=FALSE, message=FALSE, warning=FALSE}
+library(readr)
+library(dplyr)
+  repos <- read_rds("scratch/repos.rds") %>% ungroup %>%
+    select(pretty_repo,os_health,warnings) %>% na.omit()
+```
+
+## Packages
+
+```{r health, echo=FALSE, results='asis'}
+for (i in 1:nrow(repos)){
+  cat(glue::glue("
+
+*{repos[i,]$pretty_repo}*
+    
+* Score is {repos[i,]$os_health}  
+{repos[i,]$warnings}
+    
+    
+  "))
+}
+```

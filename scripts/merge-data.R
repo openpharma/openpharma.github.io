@@ -4,6 +4,7 @@ library(readr)
 library(glue)
 library(tidyr)
 library(purrr)
+library(GithubMetrics)
 
 
 ## Load data
@@ -217,163 +218,68 @@ library(purrr)
     
 ## Generate Health table ------------
   
-  health <- repos %>%
+  issues_oshealth <- data_gh_issues %>% ungroup %>%
     mutate(
-      days_since_update = as.numeric(Sys.Date() - as.Date(gh_updated))
+      days_open = as.numeric(Sys.Date() - as.Date(created)),
+      days_no_activity = as.numeric(Sys.Date() - as.Date(updated))
     ) %>%
-    select(full_name, days_since_update) %>%
-    left_join(
-      # time current open
-      data_gh_issues %>%
-        group_by(full_name) %>%
-        filter(state == "open") %>%
-        summarise(
-          open_issues = n(),
-          median_age_open_issue = median(days_open),
-          median_inactivity_open_issue = median(days_no_activity)
-        ),
-      by = "full_name"
-    ) %>%
-    left_join(
-      # time to close
-      data_gh_issues %>%
-        group_by(full_name) %>%
-        filter(state == "closed") %>%
-        summarise(
-          closed_issues = n(),
-          median_timeto_close = median(days_open)
-        )  ,
-      by = "full_name"  
-    ) %>%
-    left_join(
-      # increase in commits?
-      commits %>%
-        group_by(full_name) %>%
-        mutate(
-          date_numeric = as.numeric(date),
-          midpoint = quantile(date_numeric, 0.5),
-          firsthalf = ifelse(date_numeric >= midpoint,FALSE,TRUE)
-        ) %>%
-        summarise(
-          commits = n(),
-          secondhalf = sum(ifelse(!firsthalf,1,0)),
-          firsthalf = sum(ifelse(firsthalf,1,0))
-        ) %>%
-        mutate(
-          abs = secondhalf - firsthalf
-        ) %>%
-        select(
-          full_name, abs_commits = abs,commits
-        )   ,
-      by = "full_name" 
-    ) %>%
-    left_join(
-      # increase in people?
-      commits %>%
-        group_by(full_name) %>%
-        summarise(
-          authors_ever = n_distinct(author_clean)
-        ),
-      by = "full_name"
-    ) %>%
-    left_join(
-      # increase in people?
-      commits %>%
-        group_by(full_name) %>%
-        mutate(
-          date_numeric = as.numeric(date),
-          midpoint = quantile(date_numeric, 0.5),
-          timing = ifelse(date_numeric >= midpoint,"firsthalf","secondhalf")
-        ) %>%
-        group_by(full_name,timing) %>%
-        summarise(
-          active_people = n_distinct(author_clean)
-        ) %>% ungroup %>%
-        pivot_wider(
-          names_from = timing, values_from = active_people, values_fill = 0
-        ) %>%
-        mutate(
-          ratio = secondhalf/firsthalf,
-          abs_people = secondhalf-firsthalf,
-          percentage_people = round(100*ratio),
-          # if one commit set to 0
-          percentage_people = ifelse(percentage_people == Inf,0,percentage_people)
-        ) %>%
-        select(full_name,abs_people),
-      by = "full_name"
-    ) %>%
-    # Score
-    ungroup() %>%
-    mutate(
-      score = ifelse(days_since_update < 30*6,1,0),
-      score = case_when(
-        is.na(sum(open_issues,closed_issues, na.rm = TRUE)) ~ score,
-        TRUE ~ score + 1
-      ),
-      score = case_when(
-        commits < 25 ~ score,
-        TRUE ~ score + 1
-      ),
-      score = case_when(
-        authors_ever < 5 ~ score,
-        TRUE ~ score + 1
-      ),
-      score = case_when(
-        is.na(median_age_open_issue) ~ score,
-        median_age_open_issue > 30*6 ~ score,
-        TRUE ~ score + 1
-      ),
-      score = case_when(
-        is.na(median_inactivity_open_issue) ~ score,
-        median_inactivity_open_issue > 30*3 ~ score,
-        TRUE ~ score + 1
-      ),
-      score = case_when(
-        is.na(open_issues) | is.na(closed_issues) ~ score,
-        open_issues > closed_issues ~ score,
-        TRUE ~ score + 1
-      ),
-      score = case_when(
-        is.na(abs_commits)  ~ score,
-        abs_commits < 0 ~ score,
-        TRUE ~ score + 1
-      ),
-      score = case_when(
-        is.na(abs_people)  ~ score,
-        abs_people < 0 ~ score,
-        TRUE ~ score + 1
-      )
-    ) %>%
-    filter(!is.na(score)) %>%
-    mutate(
-      max = max(score, na.rm = TRUE),
-      Health = round(100*score/max(score, na.rm = TRUE)),
-      
-      pretty_repo = glue(
-        '<a href="https://github.com/{full_name}">{full_name}</a>'
-      )
-    ) %>%
-    # tidy title
     select(
-      full_name,
-      pretty_repo,
-      Health,
-      Commits = commits,
-      Contributors = authors_ever,
-      `Days repo inactive` = days_since_update,
-      `Median days open for current issues` = median_age_open_issue,
-      `Median days without comments on open issues` = median_inactivity_open_issue,
-      `Median days to close issue` = median_timeto_close,
-      `Change in frequency of commits` = abs_commits,
-      `Change in active contributors` = abs_people
-    ) %>%
-    arrange(
-      desc(Health)
-    ) 
+      full_name, state, days_open, days_no_activity
+    )
   
+  commits_oshealth <- commits %>% ungroup %>%
+    mutate(
+      date = as.Date(datetime)
+    ) %>%
+    select(full_name, date, author)
+  
+  health <- tibble(
+    full_name = unique(commits$full_name)
+    ) %>%
+    left_join(
+      gh_metric_issues(issues_oshealth), by = "full_name"
+    ) %>%
+    left_join(
+      gh_metric_commits_days_since_commit(commits_oshealth), by = "full_name"
+    ) %>%
+    left_join(
+      gh_metric_commits_prepost_midpoint(commits_oshealth), by = "full_name"
+    ) %>%
+    left_join(
+      gh_metric_commits_authors_ever(commits_oshealth), by = "full_name"
+    ) %>%
+    left_join(
+      gh_metric_commits_authors_prepost_midpoint(commits_oshealth), by = "full_name"
+    ) %>%
+    gh_score() %>% 
+    mutate(
+      os_health = score
+    )
+    
   repos <- repos %>%
     select(org:imputed_description) %>% # fresh health
     left_join(health, by = "full_name")
+  
+  # total contributors
+  repos <- repos %>%
+    left_join(
+      commits %>% 
+        group_by(full_name) %>%
+        summarise(
+          Contributors = n_distinct(author_clean),
+          Commits = n(),
+          `Last Commit` = max(date)
+        ),
+      by = "full_name"
+    )
+  
+  # Nicer repo name
+  repos <- repos %>%
+    mutate(
+      pretty_repo = glue(
+        '<a href="https://github.com/{full_name}">{full_name}</a>'
+      )
+    )
 
 
 ## Help

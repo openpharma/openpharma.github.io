@@ -10,6 +10,8 @@ output:
     source_code: https://github.com/openpharma/openpharma.github.io
     navbar:
       - { title: "Github", href: "https://github.com/openpharma/", align: right, icon: github}
+    includes: 
+      in_header: googleanalytics.html
 ---
 
 ```{r, include=FALSE}

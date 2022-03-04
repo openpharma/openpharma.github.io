@@ -147,6 +147,12 @@ pharmaverse:
   admiral:
     lang: r
     type: 
+  end_to_end_examples:
+    lang: r
+    type:
+  metatools:
+    lang: r
+    type: 
 pharmaR:
   riskmetric:
     lang: r
@@ -188,11 +194,6 @@ Roche:
   synthetic.cdisc.data:
     lang: r
     type: synthetic-data
-Roche-GSK:
-  admiral:
-    lang: r
-    type: 
-      - filing-tools
 UCL:
   RefbasedMI:
     lang: r

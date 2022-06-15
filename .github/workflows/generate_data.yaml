@@ -40,6 +40,9 @@ jobs:
       - name: Snakemake # python3 -m pip install --upgrade networkx pygraphvis
         run: |
           python3 -m pip install snakemake
+          python3 - m pip install pandas==1.4.2
+          python3 - m pip install boto3==1.24.9
+
 
 # IF develop
       - name: Build dev
@@ -50,7 +53,7 @@ jobs:
           OPENPHARMA_AWS_DEFAULT_REGION: ${{ secrets.OPENPHARMA_AWS_DEFAULT_REGION }}
           OPENPHARMA_PAT: ${{ secrets.OPENPHARMA_PAT }}
         run: |
-          snakemake -j2  -F merge_data
+          snakemake -j2  -F python_clean_data
           
           
         

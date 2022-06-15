@@ -65,7 +65,7 @@ rule merge_data:
 
 rule python_clean_data:
     input:
-        "python_scripts/clean_df.py"
+        "python_scripts/clean_df.py",
         "scratch/repos.csv",
         "scratch/people.csv",
         "scratch/help.csv",

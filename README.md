@@ -25,3 +25,4 @@ Optionally, you can add metadata as well at the bottom of the yaml.
 See gh-actions for build.
 
 Should migrate to CHOASS stack? See experiment folder.
+What is CHOASS?

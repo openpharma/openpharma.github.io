@@ -65,14 +65,15 @@ rule merge_data:
 
 rule python_clean_data:
     input:
-        "python_scripts/clean_df.py",
+        "python_scripts/main.py",
         "scratch/repos.csv",
         "scratch/people.csv",
         "scratch/help.csv",
         "scratch/commits.csv"
     output:
         "scratch/repos_clean.csv"
-    shell: "python3 python_scripts/clean_df.py"
+        "scratch/help_clean.csv"
+    shell: "python3 python_scripts/main.py"
 
 
 rule generate_badges:

@@ -1,11 +1,19 @@
 import pandas as pd
-import requests
 import yaml
+import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+
 
 GITHUB_URL_ICON = 'https://api.github.com/repos/pharmaverse/pharmaverse/contents/data/packages'
 
 def get_icon_package_gh_api(path: str=GITHUB_URL_ICON):
     try:
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
         response = requests.get(path)
         json_packages = [response.json()[i]['download_url'] for i in range(len(response.json()))]
         l_repo = []

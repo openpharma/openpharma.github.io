@@ -71,7 +71,7 @@ rule python_clean_data:
         "scratch/help.csv",
         "scratch/commits.csv"
     output:
-        "scratch/repos_clean.csv"
+        "scratch/repos_clean.csv",
         "scratch/help_clean.csv"
     shell: "python3 python_scripts/main.py"
 

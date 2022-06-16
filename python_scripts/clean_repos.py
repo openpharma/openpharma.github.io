@@ -39,6 +39,8 @@ def clean_merge_df(path: str) -> pd.DataFrame:
     if(len(df_icon)>=1):
         df = df.merge(df_icon, how='left', on='full_name', suffixes=('', '_'))
         df['icon_package'] = df['icon_package'].fillna("https://cran.r-project.org/Rlogo.svg")
+    else:
+        df['icon_package'] = "https://cran.r-project.org/Rlogo.svg"
     return df
 
 

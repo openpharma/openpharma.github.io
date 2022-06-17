@@ -31,10 +31,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-renv-
 
-      - uses: actions/labeler@v4
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Restore packages
         shell: Rscript {0}
         run: |

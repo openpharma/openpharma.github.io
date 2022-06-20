@@ -18,7 +18,7 @@ atorus-research:
     lang: r
     type:
       - filing-tools
-  timber:
+  logrx:
     lang: r
     type: filing-tools
 EliLillyCo:
@@ -44,6 +44,10 @@ GSK-Biostatistics:
   neointerface:
     lang: python
     type: filing-tools
+  tlang:
+    lang: r
+    type: 
+      - tlg
 insightsengineering:
   chevron:
     lang: r

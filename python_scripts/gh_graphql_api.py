@@ -30,7 +30,7 @@ def get_node_id_repos(df: pd.DataFrame)-> List[str]:
 """
 Internal function for get_issues_content
 """
-def flatten_output(l_1: List[dict], l_2: List[dict])-> tuple(List[dict], List[dict]):
+def flatten_output(l_1: List[dict], l_2: List[dict])-> tuple([List[dict], List[dict]]):
     l_o = []
     l_c = []
     if(len(l_1)==len(l_2)):
@@ -51,7 +51,7 @@ Getting open issues reactions, comments, author and so one
         - Reactions
         - Author
 """
-def get_issues_content(ids_node_list: List[str])-> tuple(List[dict], List[dict]): 
+def get_issues_content(ids_node_list: List[str])-> tuple([List[dict], List[dict]]): 
     #Divide list in sublist of size 50
     l_o = []
     l_c = []
@@ -125,7 +125,7 @@ def get_issues_content(ids_node_list: List[str])-> tuple(List[dict], List[dict])
 """
 Transform JSON into pandas dataframe
 """
-def transform_json_to_df(l_open: List[dict], l_closed: List[dict])-> tuple(pd.DataFrame, pd.DataFrame):
+def transform_json_to_df(l_open: List[dict], l_closed: List[dict])-> tuple([pd.DataFrame, pd.DataFrame]):
     df_open = pd.json_normalize(l_open)
     df_closed = pd.json_normalize(l_closed)
     df_open = df_open.apply(lambda x: x.explode()).reset_index(drop=True)

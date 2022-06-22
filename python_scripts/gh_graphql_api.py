@@ -100,13 +100,14 @@ def get_issues_content(ids_node_list: List[str])-> tuple([List[dict], List[dict]
                         }
                         }"""
             #OPEN ISSUES
-            print(response.status_code)
+            
             variables = {'list_ids': ids_node_list_divided[i], 'status': 'OPEN'}
             response = requests.post(
                 url=PATH_GRAPHQL_API,
                 json={'query': query, 'variables': variables}, 
                 auth=(AUTH_NAME, OPENPHARMA_PAT)
             )
+            print(response.status_code)
             l_o.append(response.json())
             #CLOSED ISSUES
             variables = {'list_ids': ids_node_list_divided[i], 'status': 'CLOSED'}

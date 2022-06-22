@@ -5,7 +5,6 @@ import clean_openissues
 
 """
 Env varibales for AWS S3 Bucket - data uploading there
-
 """
 
 os.environ['AWS_ACCESS_KEY_ID'] = os.getenv('OPENPHARMA_AWS_ACCESS_KEY_ID')

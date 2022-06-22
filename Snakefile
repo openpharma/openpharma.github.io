@@ -81,7 +81,8 @@ rule python_scraping_issues_graphql:
         "python_scripts/main_graphql.py",
         "scratch/repos_clean.csv"
     output:
-            
+        'scratch/lead_open_issues.csv',
+        'scratch/lead_closed_issues.csv'
     shell: "python3 python_scripts/main_graphql.py"
 
 

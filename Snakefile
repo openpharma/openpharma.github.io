@@ -65,7 +65,7 @@ rule merge_data:
 
 rule python_clean_data:
     input:
-        "python_scripts/main.py",
+        "python_scripts/main_clean.py",
         "scratch/repos.csv",
         "scratch/people.csv",
         "scratch/help.csv",
@@ -73,7 +73,16 @@ rule python_clean_data:
     output:
         "scratch/repos_clean.csv",
         "scratch/help_clean.csv"
-    shell: "python3 python_scripts/main.py"
+    shell: "python3 python_scripts/main_clean.py"
+
+
+rule python_scraping_issues_graphql:
+    input:
+        "python_scripts/main_graphql.py",
+        "scratch/repos_clean.csv"
+    output:
+            
+    shell: "python3 python_scripts/main_graphql.py"
 
 
 rule generate_badges:

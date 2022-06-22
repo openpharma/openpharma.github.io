@@ -100,6 +100,7 @@ def get_issues_content(ids_node_list: List[str])-> tuple([List[dict], List[dict]
                         }
                         }"""
             #OPEN ISSUES
+            print(response.status_code)
             variables = {'list_ids': ids_node_list_divided[i], 'status': 'OPEN'}
             response = requests.post(
                 url=PATH_GRAPHQL_API,

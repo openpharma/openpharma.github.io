@@ -17,6 +17,9 @@ df_open_issues, df_closed_issues = gh_graphql_api.main_gh_issues(df=df_repos_cle
 df_open_issues.to_csv("scratch/lead_open_issues.csv", index=False)
 df_closed_issues.to_csv("scratch/lead_closed_issues.csv", index=False)
 
+"""
+AWS client
+"""
 
 client = boto3.client('s3',
     aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),

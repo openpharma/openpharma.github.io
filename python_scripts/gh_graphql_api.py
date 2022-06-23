@@ -62,66 +62,69 @@ def get_issues_content(ids_node_list: List[str])-> tuple([List[dict], List[dict]
         #try:
         # len(ids_node_list)/10 requests
         for i in range(0, len(ids_node_list_divided)):
-            query = """query($list_ids: [ID!]!, $status: [IssueState!]) {
-                        rateLimit{
-                            cost
-                        }
-                        nodes(ids: $list_ids) {
-                            ... on Repository {
-                            name
-                            owner {
-                                login
+            try:
+                query = """query($list_ids: [ID!]!, $status: [IssueState!]) {
+                            rateLimit{
+                                cost
                             }
-                            issues(first: 50, states: $status, orderBy: {field: UPDATED_AT, direction: DESC}) {
-                            edges{
-                                node{
-                                    title
-                                    author{
-                                        login
-                                    }
-                                    comments(first: 15){
-                                        totalCount
-                                        nodes{
+                            nodes(ids: $list_ids) {
+                                ... on Repository {
+                                name
+                                owner {
+                                    login
+                                }
+                                issues(first: 50, states: $status, orderBy: {field: UPDATED_AT, direction: DESC}) {
+                                edges{
+                                    node{
+                                        title
                                         author{
                                             login
                                         }
-                                        reactions(first: 15) {
+                                        comments(first: 15){
                                             totalCount
+                                            nodes{
+                                            author{
+                                                login
+                                            }
+                                            reactions(first: 15) {
+                                                totalCount
+                                            }
                                         }
                                     }
-                                }
-                                reactions(first: 30) {
-                                    totalCount
+                                    reactions(first: 30) {
+                                        totalCount
+                                    }
+                                    }
                                 }
                                 }
                             }
                             }
-                        }
-                        }
-                        }"""
-            #OPEN ISSUES
-            
-            variables = {'list_ids': ids_node_list_divided[i], 'status': 'OPEN'}
-            response = requests.post(
-                url=PATH_GRAPHQL_API,
-                json={'query': query, 'variables': variables}, 
-                auth=(AUTH_NAME, OPENPHARMA_PAT)
-            )
-            print(response.status_code)
-            l_o.append(response.json())
-            #CLOSED ISSUES
-            variables = {'list_ids': ids_node_list_divided[i], 'status': 'CLOSED'}
-            response = requests.post(
-                url=PATH_GRAPHQL_API, 
-                json={'query': query, 'variables': variables}, 
-                auth=(AUTH_NAME, OPENPHARMA_PAT)
-            )
-            l_c.append(response.json())
+                            }"""
+                #OPEN ISSUES
+                
+                variables1 = {'list_ids': ids_node_list_divided[i], 'status': 'OPEN'}
+                response1 = requests.post(
+                    url=PATH_GRAPHQL_API,
+                    json={'query': query, 'variables': variables1}, 
+                    auth=(AUTH_NAME, OPENPHARMA_PAT)
+                )
+                #CLOSED ISSUES
+                variables2 = {'list_ids': ids_node_list_divided[i], 'status': 'CLOSED'}
+                response2 = requests.post(
+                    url=PATH_GRAPHQL_API, 
+                    json={'query': query, 'variables': variables2}, 
+                    auth=(AUTH_NAME, OPENPHARMA_PAT)
+                )
+                print("Response open issues status :", response1.status_code)
+                print("Response closed issues status :", response2.status_code)
+                if(response1.status_code == 200 and response2.status_code == 200):
+                    l_o.append(response1.json())
+                    l_c.append(response2.json())
 
             #Flatten the output -> the granularity will be repos by repos
+            except BaseException as error:
+                print('An exception occurred: {}'.format(error))
         l_open, l_closed = flatten_output(l_o, l_c)
-        #except BaseException as error:
-            #print('An exception occurred: {}'.format(error))
     return l_open, l_closed
 
 """

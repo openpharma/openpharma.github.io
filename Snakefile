@@ -63,7 +63,7 @@ rule merge_data:
     shell: "Rscript scripts/merge-data.R"
 
 
-rule python_clean_data:
+rule python_clean_repos:
     input:
         "python_scripts/main_clean.py",
         "scratch/repos.csv",
@@ -76,13 +76,13 @@ rule python_clean_data:
     shell: "python3 python_scripts/main_clean.py"
 
 
-rule python_scraping_issues_graphql:
+rule python_graphql_clean_people:
     input:
         "python_scripts/main_graphql.py",
-        "scratch/repos_clean.csv"
+        "scratch/repos_clean.csv",
+        "scratch/people.csv"
     output:
-        "scratch/lead_open_issues.csv",
-        "scratch/lead_closed_issues.csv"
+        "scratch/people_clean.csv"
     shell: "python3 python_scripts/main_graphql.py"
 
 

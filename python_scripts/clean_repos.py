@@ -33,6 +33,8 @@ def clean_merge_df(path: str) -> pd.DataFrame:
     df['license_clean'] = df['cran_license'].apply(clean_license)
     df['risk_column'] = (20*df['riskmetric_score_quintile']+df['os_health'])/2
     df['last_commit_d'] = (pd.to_datetime("today") - pd.to_datetime(df['Last Commit'])).dt.days.astype('Int64')
+    df['icon_package_link'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/Rlogo.svg"
+    df.loc[df['lang'] == "python", 'icon_package_link'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/python.png"
 
     df_icon = gh_icon_api.get_icon_package_gh_api()
     if(len(df_icon)>=1):
@@ -40,7 +42,7 @@ def clean_merge_df(path: str) -> pd.DataFrame:
         df['icon_package'] = df['icon_package'].fillna("https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/Rlogo.svg")
         df.loc[df['lang'] == "python", 'icon_package'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/python.png"
     else:
-        df['icon_package'] = "https://cran.r-project.org/Rlogo.svg"
+        df['icon_package'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/Rlogo.svg"
         df.loc[df['lang'] == "python", 'icon_package'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/python.png"
     return df
 

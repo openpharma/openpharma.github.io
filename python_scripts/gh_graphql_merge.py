@@ -210,7 +210,7 @@ def merge_metrics_people(df_people: pd.DataFrame, df1: pd.DataFrame, df2: pd.Dat
 
 
 """
-Final Function to call all previous functions
+Main Function to call all previous functions
 """
 def main_gh_issues(df_repos_clean: pd.DataFrame, df_people: pd.DataFrame):
     # Step 1 : Getting id_node for each repo

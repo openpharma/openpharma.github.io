@@ -144,82 +144,17 @@ def concat_open_closed(df1: pd.DataFrame, df2: pd.DataFrame)-> pd.DataFrame:
     frames = [df1, df2]
     return pd.concat(frames, ignore_index=True)
 
-"""
-Calculate Author Contrib
-"""
-def author_contrib(df: pd.DataFrame)-> pd.DataFrame:
-    try:
-        df_ac = df.join(pd.json_normalize(df['issues.edges'])).drop(columns=['issues.edges'])
-        df_ac['node.comments.totalCount'] += 1
-        df_ac['node.reactions.totalCount'] += 1
-        df_ac = df_ac.groupby('node.author.login', as_index=False)[['node.comments.totalCount', 'node.reactions.totalCount']].sum()
-        df_ac = df_ac.rename(columns={"node.comments.totalCount": "P_comments", "node.reactions.totalCount": "P_reactions", "node.author.login": "author"})
-    except:
-        print("Error on columns header : JSON format from graphQL has changed")
-        df_ac = pd.DataFrame()
-    return df_ac
 
-
-"""
-Calculate Replier Contrib
-"""
-def replier_contrib(df: pd.DataFrame)-> tuple([pd.DataFrame, pd.DataFrame]):
-    try:
-        df_rc = df.join(pd.json_normalize(df['issues.edges'])).drop(columns=['issues.edges'])
-        df_rc = df_rc.apply(lambda x: x.explode()).reset_index(drop=True)
-        df_rc = df_rc.join(pd.json_normalize(df_rc['node.comments.nodes'])).drop(columns=['node.comments.nodes'])
-        df_rc['reactions.totalCount'] += 1
-        df_rc = df_rc.rename(columns={"owner.login": "repos_owner", "node.author.login": "author_issue", "author.login": "author_comment"})
-        #Metric on first comment
-        df_rc_firstcom = df_rc[df_rc['author_issue'] != df_rc['author_comment']].reset_index(drop=True)
-        df_rc_firstcom = df_rc_firstcom[df_rc_firstcom['node.comments.totalCount']>0]
-        df_rc_firstcom = df_rc_firstcom.groupby('node.title').first().reset_index()
-        df_rc_firstcom = df_rc_firstcom.groupby('author_comment', as_index=False)[['reactions.totalCount']].sum()
-        df_rc_firstcom = df_rc_firstcom.rename(columns={"reactions.totalCount": "FC_reactions", "author_comment": "author"})
-        #Metric on comments
-        df_rc_com = df_rc.drop(df_rc.groupby('node.title', as_index=False).nth(0).index).reset_index(drop=True)
-        df_rc_com = df_rc_com.groupby('author_comment', as_index=False)[['reactions.totalCount']].sum()
-        df_rc_com = df_rc_com.rename(columns={"reactions.totalCount": "C_reactions", "author_comment": "author"})
-    except:
-        print("Error on columns header : JSON format from graphQL has changed")
-        df_rc_firstcom = pd.DataFrame()
-        df_rc_com = pd.DataFrame()
-    return df_rc_firstcom, df_rc_com
-
-"""
-Join with people table
-"""
-def merge_metrics_people(df_people: pd.DataFrame, df1: pd.DataFrame, df2: pd.DataFrame, df3: pd.DataFrame)-> pd.DataFrame:
-    try:
-        df_people = df_people.join(df1.set_index('author'), how='left', on='author')
-        df_people = df_people.join(df2.set_index('author'), how='left', on='author')
-        df_people = df_people.join(df3.set_index('author'), how='left', on='author')
-        columns = ['P_comments', 'P_reactions', 'FC_reactions', 'C_reactions']
-        df_people[columns] = df_people[columns].fillna(0)
-        df_people['Best_author'] = df_people['P_comments']+df_people['P_reactions']
-        df_people['Best_replier'] = df_people['FC_reactions']+df_people['C_reactions']
-        # Cleaning stuff and formatting
-        columns_clean = ['Best_replier', 'Best_author', 'P_comments', 'P_reactions', 'FC_reactions', 'C_reactions', 'days_last_active']
-        df_people = df_people.dropna(subset=['author']).reset_index(drop=True)
-        df_people['contributed_to'] = df_people['contributed_to'].fillna(0)
-        df_people['days_last_active'] = df_people['days_last_active'].fillna(0)
-        df_people[columns_clean] = df_people[columns_clean].astype(int)
-    except:
-        print("Issue to merge people.csv and data from open/closed issues")
-    return df_people
 
 
 """
 Main Function to call all previous functions
 """
-def main_gh_issues(df_repos_clean: pd.DataFrame, df_people: pd.DataFrame):
+def main_gh_issues(df_repos_clean: pd.DataFrame)-> pd.DataFrame:
     # Step 1 : Getting id_node for each repo
     # Step 2 : Get the data from graphQL API
     ids_list = get_node_id_repos(df_repos_clean)
     l_open, l_closed = get_issues_content(ids_node_list=ids_list)
     df_open, df_closed = transform_json_to_df(l_open=l_open, l_closed=l_closed)
     df_issues = concat_open_closed(df_open, df_closed)
-    df_ac = author_contrib(df_issues)
-    df_rc1, df_rc2 = replier_contrib(df_issues)
-    df_final = merge_metrics_people(df_people=df_people, df1=df_ac, df2=df_rc1, df3=df_rc2)
-    return df_final
+    return df_issues

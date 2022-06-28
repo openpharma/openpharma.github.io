@@ -55,7 +55,7 @@ jobs:
           OPENPHARMA_AWS_DEFAULT_REGION: ${{ secrets.OPENPHARMA_AWS_DEFAULT_REGION }}
           OPENPHARMA_PAT: ${{ secrets.OPENPHARMA_PAT }}
         run: |
-          snakemake -j2  -F python_graphql_clean_people
+          snakemake -j2  -F python_gh_issues_graphql
           
           
         

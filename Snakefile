@@ -76,13 +76,12 @@ rule python_clean_repos:
     shell: "python3 python_scripts/main_clean.py"
 
 
-rule python_graphql_clean_people:
+rule python_gh_issues_graphql:
     input:
         "python_scripts/main_graphql.py",
-        "scratch/repos_clean.csv",
-        "scratch/people.csv"
+        "scratch/repos_clean.csv"
     output:
-        "scratch/people_clean.csv"
+        "scratch/gh_leaderboard_raw.parquet"
     shell: "python3 python_scripts/main_graphql.py"
 
 

@@ -22,6 +22,7 @@ df_gh_leaderboard = gh_issues_graphql.main_gh_issues(
     )
 df_gh_leaderboard.to_parquet(PATH_GH_LEADERBOARD)
 
+# We clean people csv here and not in main_clean becauze we need repos_clean (otherwise cycle in DAG)
 df_people_clean = clean_leaderboard.main_overall_metric(
     path_people=PATH_PEOPLE,
     path_gh_graphql=PATH_GH_LEADERBOARD

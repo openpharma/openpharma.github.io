@@ -8,7 +8,7 @@ def preproc_people(df_people: pd.DataFrame)-> pd.DataFrame:
         df_people = df_people.dropna(subset=['author']).reset_index(drop=True)
         df_people["repo_list"] = df_people["repo_list"].fillna("").apply(lambda x: x.split(" | "))
     except:
-        print("An exception occurred in preproc_people")
+        print("An exception occurred in preproc_people function")
     return df_people
 
 
@@ -48,11 +48,11 @@ def altruist_metric(df_people: pd.DataFrame, df_gh: pd.DataFrame)-> pd.DataFrame
         #Scale metrics
         columns_metric = ["#comments_altruist", "#reactions_altruist", "#first_comments_altruist"]
         df_people[columns_metric] = df_people[columns_metric].fillna(0)
-        df_people[columns_metric] = scaler.fit_transform(df_people[columns_metric])
-        df_people["altruist_metric"] = 100*(df_people["#comments_altruist"]+df_people["#reactions_altruist"]+df_people["#first_comments_altruist"])/3
+        df_people[["#m1_alt", "#m2_alt", "#m3_alt"]] = scaler.fit_transform(df_people[columns_metric])
+        df_people["altruist_metric"] = 100*(df_people["#m1_alt"]+df_people["#m2_alt"]+df_people["#m3_alt"])/3
         df_people[["altruist_metric"]] = (100*scaler.fit_transform(df_people[["altruist_metric"]])).astype(int)
     except:
-        print("An exception occurred in altruist metric")
+        print("An exception occurred in altruist metric function")
     return df_people
 
 
@@ -92,11 +92,11 @@ def self_maintainer_metric(df_people: pd.DataFrame, df_gh: pd.DataFrame)-> pd.Da
         #Scale metrics
         columns_metric = ['#comments_self_maintainer', '#reactions_self_maintainer', '#first_comments_self_maintainer']
         df_people[columns_metric] = df_people[columns_metric].fillna(0)
-        df_people[columns_metric] = scaler.fit_transform(df_people[columns_metric])
-        df_people['self_maintainer_metric'] = 100*(df_people['#comments_self_maintainer']+df_people['#reactions_self_maintainer']+df_people['#first_comments_self_maintainer'])/3
+        df_people[["#m1_sm", "#m2_sm", "#m3_sm"]] = scaler.fit_transform(df_people[columns_metric])
+        df_people['self_maintainer_metric'] = 100*(df_people['#m1_sm']+df_people['#m2_sm']+df_people['#m3_sm'])/3
         df_people[['self_maintainer_metric']] = (100*scaler.fit_transform(df_people[['self_maintainer_metric']])).astype(int)
     except:
-        print("An exception occurred in self maintainer metric")
+        print("An exception occurred in self maintainer metric function")
     return df_people
 
 
@@ -110,20 +110,23 @@ def coder_metric(df_people: pd.DataFrame)->pd.DataFrame:
         df_pcopy[['coder_metric', 'contributed_to_metric', 'commits_metric']] = df_pcopy[['coder_metric', 'contributed_to_metric', 'commits_metric']].fillna(0)
         df_pcopy['coder_metric'] = (100*df_pcopy['coder_metric']).astype(int)
     except:
-        print("An exception occurred in coder metric")
+        print("An exception occurred in coder metric function")
     return df_pcopy
 
 
 def main_overall_metric(path_people: str, path_gh_graphql: str):
     df_people = pd.read_csv(path_people)
-    df_gh = pd.read_parquet(path_gh_graphql)
-    df_people = preproc_people(df_people)
-    df_people = coder_metric(df_people=df_people)
-    df1 = self_maintainer_metric(df_people=df_people, df_gh=df_gh)
-    df_people = df_people.merge(df1[["author", "self_maintainer_metric","#comments_self_maintainer", "#reactions_self_maintainer", "#first_comments_self_maintainer"]], how="left", on="author")
-    df2 = altruist_metric(df_people=df_people, df_gh=df_gh)
-    df_people = df_people.merge(df2[["author", "altruist_metric", "#comments_altruist", "#reactions_altruist", "#first_comments_altruist"]], how="left", on="author")
-    df_people["overall_metric"] = (df_people["coder_metric"]+df_people["self_maintainer_metric"]+df_people["altruist_metric"])/3
-    df_people["overall_metric"] = (100*MinMaxScaler().fit_transform(df_people[["overall_metric"]])).astype(int)
-    df_people["repo_list"] = df_people["repo_list"].apply(' | '.join)
+    try:
+        df_gh = pd.read_parquet(path_gh_graphql)
+        df_people = preproc_people(df_people)
+        df_people = coder_metric(df_people=df_people)
+        df1 = self_maintainer_metric(df_people=df_people, df_gh=df_gh)
+        df_people = df_people.merge(df1[["author", "self_maintainer_metric","#comments_self_maintainer", "#reactions_self_maintainer", "#first_comments_self_maintainer", "#m1_sm", "#m2_sm", "#m3_sm"]], how="left", on="author")
+        df2 = altruist_metric(df_people=df_people, df_gh=df_gh)
+        df_people = df_people.merge(df2[["author", "altruist_metric", "#comments_altruist", "#reactions_altruist", "#first_comments_altruist", "#m1_alt", "#m2_alt", "#m3_alt"]], how="left", on="author")
+        df_people["overall_metric"] = (df_people["coder_metric"]+df_people["self_maintainer_metric"]+df_people["altruist_metric"])/3
+        df_people["overall_metric"] = (100*MinMaxScaler().fit_transform(df_people[["overall_metric"]])).astype(int)
+        df_people["repo_list"] = df_people["repo_list"].apply(' | '.join)
+    except:
+        print("An exception occurred into main_overall_metric function")
     return df_people

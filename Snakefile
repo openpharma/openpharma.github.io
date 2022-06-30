@@ -63,7 +63,7 @@ rule merge_data:
     shell: "Rscript scripts/merge-data.R"
 
 
-rule python_clean_repos:
+rule python_clean:
     input:
         "python_scripts/main_clean.py",
         "scratch/repos.csv",
@@ -76,13 +76,15 @@ rule python_clean_repos:
     shell: "python3 python_scripts/main_clean.py"
 
 
-rule python_gh_issues_graphql:
+rule python_leaderboard:
     input:
-        "python_scripts/main_graphql.py",
+        "python_scripts/main_leaderboard.py",
+        "scratch/people.csv",
         "scratch/repos_clean.csv"
     output:
-        "scratch/gh_leaderboard_raw.parquet"
-    shell: "python3 python_scripts/main_graphql.py"
+        "scratch/gh_leaderboard.parquet",
+        "scratch/people_clean.csv"
+    shell: "python3 python_scripts/main_leaderboard.py"
 
 
 rule generate_badges:

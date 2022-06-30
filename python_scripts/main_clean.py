@@ -21,6 +21,7 @@ df_openissues_clean = clean_openissues.clean_merge_df(path=PATH_HELP)
 df_openissues_clean.to_csv("scratch/help_clean.csv", index=False)
 
 
+
 client = boto3.client('s3',
     aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
     aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')

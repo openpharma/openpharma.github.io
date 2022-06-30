@@ -52,7 +52,7 @@ Getting open issues reactions, comments, author and so one
         - Author
 """
 def get_issues_content(ids_node_list: List[str])-> tuple([List[dict], List[dict]]): 
-    #Divide list in sublist of size 50
+    #Divide list in sublist of size 10, why ? -> tradoff between #nodes and #request
     l_o = []
     l_c = []
     l_open = []
@@ -80,13 +80,13 @@ def get_issues_content(ids_node_list: List[str])-> tuple([List[dict], List[dict]
                                         author{
                                             login
                                         }
-                                        comments(first: 15){
+                                        comments(first: 1){
                                             totalCount
                                             nodes{
                                             author{
                                                 login
                                             }
-                                            reactions(first: 15) {
+                                            reactions(first: 30) {
                                                 totalCount
                                             }
                                         }
@@ -143,7 +143,6 @@ Concat open and closed issues
 def concat_open_closed(df1: pd.DataFrame, df2: pd.DataFrame)-> pd.DataFrame: 
     frames = [df1, df2]
     return pd.concat(frames, ignore_index=True)
-
 
 
 

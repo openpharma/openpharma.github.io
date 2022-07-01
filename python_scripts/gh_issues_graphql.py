@@ -47,7 +47,8 @@ Getting open issues reactions, comments, author and so one
     - 50 most recent issues (OPEN and CLOSED)
     - Author
     - Reactions
-    - 15 first comments
+    - #comments
+    - 1st comment
         - Reactions
         - Author
 """

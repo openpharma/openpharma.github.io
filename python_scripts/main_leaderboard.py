@@ -38,11 +38,18 @@ client = boto3.client('s3',
     aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
 )
 
+"""
+Raw data in parquet format (bcz it preserves type contrarely to csv (dict and list))
+"""
 client.upload_file(Filename=PATH_GH_LEADERBOARD,
     Bucket='openpharma',
     Key='gh_leaderboard.parquet'
 )
 
+
+"""
+People clean data in csv format
+"""
 client.upload_file(Filename=PATH_PEOPLE_CLEAN,
     Bucket='openpharma',
     Key='people_clean.csv'

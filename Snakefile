@@ -61,7 +61,32 @@ rule merge_data:
         "scratch/commits.rds",
         "scratch/commits.csv"
     shell: "Rscript scripts/merge-data.R"
-    
+
+
+rule python_clean:
+    input:
+        "python_scripts/main_clean.py",
+        "scratch/repos.csv",
+        "scratch/people.csv",
+        "scratch/help.csv",
+        "scratch/commits.csv"
+    output:
+        "scratch/repos_clean.csv",
+        "scratch/help_clean.csv"
+    shell: "python3 python_scripts/main_clean.py"
+
+
+rule python_leaderboard:
+    input:
+        "python_scripts/main_leaderboard.py",
+        "scratch/people.csv",
+        "scratch/repos_clean.csv"
+    output:
+        "scratch/gh_leaderboard.parquet",
+        "scratch/people_clean.csv"
+    shell: "python3 python_scripts/main_leaderboard.py"
+
+
 rule generate_badges:
     input: "scripts/generate-badges.R", "scratch/repos.rds"
     output: "scratch/badges.csv"

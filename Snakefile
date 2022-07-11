@@ -141,4 +141,6 @@ rule all:
     input: 
         "index.html",
         "os-health.html",
-        "scratch/contents.rds"
+        "scratch/contents.rds",
+        "scratch/repos_clean.csv",
+        "scratch/people_clean.csv"

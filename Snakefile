@@ -72,7 +72,8 @@ rule python_clean:
         "scratch/commits.csv"
     output:
         "scratch/repos_clean.csv",
-        "scratch/help_clean.csv"
+        "scratch/help_clean.csv",
+        "scratch/pharmaverse_packages.csv"
     shell: "python3 python_scripts/main_clean.py"
 
 

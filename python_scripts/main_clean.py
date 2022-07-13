@@ -14,8 +14,9 @@ PATH_REPOS = "scratch/repos.csv"
 PATH_HELP = "scratch/help.csv"
 
 
-df_repos_clean = clean_repos.clean_merge_df(path=PATH_REPOS)
+df_repos_clean, df_icon = clean_repos.clean_merge_df(path=PATH_REPOS)
 df_repos_clean.to_csv("scratch/repos_clean.csv", index=False)
+df_icon.to_csv("scratch/pharmaverse_packages.csv", index=False)
 
 df_openissues_clean = clean_openissues.clean_merge_df(path=PATH_HELP)
 df_openissues_clean.to_csv("scratch/help_clean.csv", index=False)
@@ -35,4 +36,9 @@ client.upload_file(Filename='scratch/repos_clean.csv',
 client.upload_file(Filename='scratch/help_clean.csv',
     Bucket='openpharma',
     Key='help_clean.csv'
+)
+
+client.upload_file(Filename='scratch/pharmaverse_packages.csv',
+    Bucket='openpharma',
+    Key='pharmaverse_packages.csv'
 )

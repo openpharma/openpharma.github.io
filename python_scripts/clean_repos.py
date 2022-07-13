@@ -17,7 +17,7 @@ def clean_license(x):
     else:
         return 'Other Licenses'
 
-def clean_merge_df(path: str) -> pd.DataFrame:
+def clean_merge_df(path: str) -> tuple([pd.DataFrame, pd.DataFrame]):
     df = pd.read_csv(path)
     df['description'] = df['cran_description']
     df['title'] = df['cran_title']
@@ -44,7 +44,7 @@ def clean_merge_df(path: str) -> pd.DataFrame:
     else:
         df['icon_package'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/Rlogo.svg"
         df.loc[df['lang'] == "python", 'icon_package'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/python.png"
-    return df
+    return df, df_icon
 
 
 

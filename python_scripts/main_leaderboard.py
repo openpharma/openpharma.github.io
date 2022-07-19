@@ -17,6 +17,8 @@ PATH_GH_LEADERBOARD_PHARMAVERSE = "scratch/gh_leaderboard_pharmaverse.parquet"
 PATH_PEOPLE = "scratch/people.csv"
 PATH_PEOPLE_CLEAN = "scratch/people_clean.csv"
 PATH_PEOPLE_CLEAN_PHARMAVERSE = "scratch/people_clean_pharmaverse.csv"
+PATH_COMMIT = "scratch/commits.csv"
+PATH_PHARMAVERSE_PACKAGES = "scratch/pharmaverse_packages.csv"
 
 #scope all contributors of packages
 df_repos_clean = pd.read_csv(PATH_REPOS_CLEAN)
@@ -46,6 +48,15 @@ df_people_clean = clean_leaderboard.main_overall_metric(
     path_people=PATH_PEOPLE,
     path_gh_graphql=PATH_GH_LEADERBOARD_PHARMAVERSE
     )
+
+#change the way of calculating best coder
+df_people_clean = clean_leaderboard.best_coder_pharmaverse(
+    df1=df_people_clean,
+    path_commit=PATH_COMMIT,
+    path_pharma=PATH_PHARMAVERSE_PACKAGES
+)
+#Additional function to recalculate commits and contrib on pharmaverse packages
+
 df_people_clean.to_csv(PATH_PEOPLE_CLEAN_PHARMAVERSE, index=False)
 
 """

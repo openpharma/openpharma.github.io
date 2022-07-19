@@ -82,7 +82,8 @@ rule python_leaderboard:
         "python_scripts/main_leaderboard.py",
         "scratch/people.csv",
         "scratch/repos_clean.csv",
-        "scratch/pharmaverse_packages.csv"
+        "scratch/pharmaverse_packages.csv",
+        "scratch/commits.csv"
     output:
         "scratch/gh_leaderboard.parquet",
         "scratch/gh_leaderboard_pharmaverse.parquet",

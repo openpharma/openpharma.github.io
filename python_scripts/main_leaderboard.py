@@ -13,22 +13,40 @@ os.environ['AWS_SECRET_ACCESS_KEY'] = os.getenv('OPENPHARMA_AWS_SECRET_ACCESS_KE
 
 PATH_REPOS_CLEAN = "scratch/repos_clean.csv"
 PATH_GH_LEADERBOARD = "scratch/gh_leaderboard.parquet"
+PATH_GH_LEADERBOARD_PHARMAVERSE = "scratch/gh_leaderboard_pharmaverse.parquet"
 PATH_PEOPLE = "scratch/people.csv"
 PATH_PEOPLE_CLEAN = "scratch/people_clean.csv"
+PATH_PEOPLE_CLEAN_PHARMAVERSE = "scratch/people_clean_pharmaverse.csv"
 
+#scope all contributors of packages
 df_repos_clean = pd.read_csv(PATH_REPOS_CLEAN)
 df_gh_leaderboard = gh_issues_graphql.main_gh_issues(
-    df_repos_clean=df_repos_clean
+    df_repos_clean=df_repos_clean,
+    scope="all"
     )
 df_gh_leaderboard.to_parquet(PATH_GH_LEADERBOARD)
 
+#pharmaverse scope
+df_gh_leaderboard = gh_issues_graphql.main_gh_issues(
+    df_repos_clean=df_repos_clean,
+    scope="pharmaverse"
+    )
+df_gh_leaderboard.to_parquet(PATH_GH_LEADERBOARD_PHARMAVERSE)
+
 # We clean people csv here and not in main_clean becauze we need repos_clean (otherwise cycle in DAG)
+#scope all contributors of packages
 df_people_clean = clean_leaderboard.main_overall_metric(
     path_people=PATH_PEOPLE,
     path_gh_graphql=PATH_GH_LEADERBOARD
     )
 df_people_clean.to_csv(PATH_PEOPLE_CLEAN, index=False)
 
+#pharmaverse scope
+df_people_clean = clean_leaderboard.main_overall_metric(
+    path_people=PATH_PEOPLE,
+    path_gh_graphql=PATH_GH_LEADERBOARD_PHARMAVERSE
+    )
+df_people_clean.to_csv(PATH_PEOPLE_CLEAN_PHARMAVERSE, index=False)
 
 """
 AWS client
@@ -46,6 +64,11 @@ client.upload_file(Filename=PATH_GH_LEADERBOARD,
     Key='gh_leaderboard.parquet'
 )
 
+client.upload_file(Filename=PATH_GH_LEADERBOARD_PHARMAVERSE,
+    Bucket='openpharma',
+    Key='gh_leaderboard_pharmaverse.parquet'
+)
+
 
 """
 People clean data in csv format
@@ -53,4 +76,9 @@ People clean data in csv format
 client.upload_file(Filename=PATH_PEOPLE_CLEAN,
     Bucket='openpharma',
     Key='people_clean.csv'
+)
+
+client.upload_file(Filename=PATH_PEOPLE_CLEAN_PHARMAVERSE,
+    Bucket='openpharma',
+    Key='people_clean_pharmaverse.csv'
 )

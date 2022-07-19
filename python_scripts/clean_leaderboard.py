@@ -31,8 +31,8 @@ def altruist_metric(df_people: pd.DataFrame, df_gh: pd.DataFrame)-> pd.DataFrame
         binary_altruist = [a not in b for a, b in zip(df_ghm1['name'], df_ghm1['repo_list'])]
         df_ghm1 = df_ghm1[binary_altruist].reset_index(drop=True)
         #first comment level
-        binary_altruist = [a not in b for a, b in zip(df_ghm2['name'], df_ghm2['repo_list'])]
-        df_ghm2 = df_ghm2[binary_altruist].reset_index(drop=True)
+        binary_fc = [a not in b for a, b in zip(df_ghm2['name'], df_ghm2['repo_list'])]
+        df_ghm2 = df_ghm2[binary_fc].reset_index(drop=True)
 
         #Calculate metrics
         df_ghm1 = df_ghm1.groupby('node.author.login', as_index=False)[["node.comments.totalCount", "node.reactions.totalCount"]].sum()
@@ -75,8 +75,8 @@ def self_maintainer_metric(df_people: pd.DataFrame, df_gh: pd.DataFrame)-> pd.Da
         binary_altruist = [a in b for a, b in zip(df_ghm1['name'], df_ghm1['repo_list'])]
         df_ghm1 = df_ghm1[binary_altruist].reset_index(drop=True)
         #first comment level
-        binary_altruist = [a in b for a, b in zip(df_ghm2['name'], df_ghm2['repo_list'])]
-        df_ghm2 = df_ghm2[binary_altruist].reset_index(drop=True)
+        binary_fc = [a in b for a, b in zip(df_ghm2['name'], df_ghm2['repo_list'])]
+        df_ghm2 = df_ghm2[binary_fc].reset_index(drop=True)
 
         #Calculate metrics
         df_ghm1 = df_ghm1.groupby('node.author.login', as_index=False)[["node.comments.totalCount", "node.reactions.totalCount"]].sum()

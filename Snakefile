@@ -81,10 +81,13 @@ rule python_leaderboard:
     input:
         "python_scripts/main_leaderboard.py",
         "scratch/people.csv",
-        "scratch/repos_clean.csv"
+        "scratch/repos_clean.csv",
+        "scratch/pharmaverse_packages.csv"
     output:
         "scratch/gh_leaderboard.parquet",
-        "scratch/people_clean.csv"
+        "scratch/gh_leaderboard_pharmaverse.parquet",
+        "scratch/people_clean.csv",
+        "scratch/people_clean_pharmaverse.csv"
     shell: "python3 python_scripts/main_leaderboard.py"
 
 

@@ -150,11 +150,17 @@ def concat_open_closed(df1: pd.DataFrame, df2: pd.DataFrame)-> pd.DataFrame:
 """
 Main Function to call all previous functions
 """
-def main_gh_issues(df_repos_clean: pd.DataFrame)-> pd.DataFrame:
+def main_gh_issues(df_repos_clean: pd.DataFrame, scope: str)-> pd.DataFrame:
     # Step 1 : Getting id_node for each repo
     # Step 2 : Get the data from graphQL API
     ids_list = get_node_id_repos(df_repos_clean)
     l_open, l_closed = get_issues_content(ids_node_list=ids_list)
     df_open, df_closed = transform_json_to_df(l_open=l_open, l_closed=l_closed)
-    df_issues = concat_open_closed(df_open, df_closed)
+    if (scope=="all"):
+        df_issues = concat_open_closed(df_open, df_closed)
+    if(scope=="pharmaverse"):
+        df_issues = concat_open_closed(df_open, df_closed)
+        df_pharmaverse = pd.read_csv("scratch/pharmaverse_packages.csv")
+        df_issues['full_name'] = df_issues['owner.login']+"/"+df_issues['name']
+        df_issues = df_issues[df_issues["full_name"].isin(df_pharmaverse['full_name'].to_list())].reset_index(drop=True)
     return df_issues

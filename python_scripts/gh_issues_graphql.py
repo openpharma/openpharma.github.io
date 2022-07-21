@@ -74,6 +74,11 @@ def get_issues_content(ids_node_list: List[str])-> tuple([List[dict], List[dict]
                                 owner {
                                     login
                                 }
+                                object(expression: "HEAD:README.md") {
+                                    ... on Blob {
+                                        text
+                                    }
+                                }
                                 issues(first: 50, states: $status, orderBy: {field: UPDATED_AT, direction: DESC}) {
                                 edges{
                                     node{

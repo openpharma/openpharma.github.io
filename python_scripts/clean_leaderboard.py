@@ -158,6 +158,7 @@ def best_coder_pharmaverse(df1: pd.DataFrame, path_commit: str, path_pharma: str
         df_final["contributed_to"] = df_final["contributed_to_y"]
         df_final = df_final.drop(columns=['commits_x', 'commits_y', 'contributed_to_x', 'contributed_to_y'])
         df_final[['commits', 'contributed_to']] = df_final[['commits', 'contributed_to']].fillna(0)
+        df_final["commits"] = df_final["commits"].astype(int)
 
         scaler = MinMaxScaler()
         df_final[['contributed_to_metric', 'commits_metric']] = scaler.fit_transform(df_final[['contributed_to', 'commits']])

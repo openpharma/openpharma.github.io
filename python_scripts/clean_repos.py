@@ -40,10 +40,10 @@ def clean_merge_df(path: str) -> tuple([pd.DataFrame, pd.DataFrame]):
     if(len(df_icon)>=1):
         df = df.merge(df_icon, how='left', on='full_name', suffixes=('', '_'))
         df['icon_package'] = df['icon_package'].fillna("https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/Rlogo.svg")
-        df.loc[df['lang'] == "python", 'icon_package'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/python.png"
+        df.loc[df['lang'] == "python", 'icon_package'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/Python.svg"
     else:
         df['icon_package'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/Rlogo.svg"
-        df.loc[df['lang'] == "python", 'icon_package'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/python.png"
+        df.loc[df['lang'] == "python", 'icon_package'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/Python.svg"
     return df, df_icon
 
 

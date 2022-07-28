@@ -92,6 +92,15 @@ rule python_leaderboard:
     shell: "python3 python_scripts/main_leaderboard.py"
 
 
+rule python_icon_readme:
+    input:
+        "python_scripts/main_icon_readme.py",
+        "scratch/gh_leaderboard.parquet",
+        "scratch/repos_clean.csv"
+    output:
+        "scratch/repos_clean_icon.csv"
+    shell: "python3 python_scripts/main_icon_readme.py"
+
 rule generate_badges:
     input: "scripts/generate-badges.R", "scratch/repos.rds"
     output: "scratch/badges.csv"
@@ -148,4 +157,5 @@ rule all:
         "os-health.html",
         "scratch/contents.rds",
         "scratch/repos_clean.csv",
-        "scratch/people_clean.csv"
+        "scratch/people_clean.csv",
+        "scratch/repos_clean_icon.csv"

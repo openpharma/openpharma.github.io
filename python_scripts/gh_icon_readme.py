@@ -27,7 +27,7 @@ def get_icon_from_readme(df_readme: pd.DataFrame, df_repos: pd.DataFrame)-> pd.D
         df2 = df2.merge(df1[["full_name","icon_link_html"]], how="left", on="full_name")
         df2["icon_link_html"] = df2["icon_link_html"].fillna("")
         df2["icon_package"] = df2.apply(lambda x: x["icon_link_html"] if ((x["icon_package"]==PATH_RLOGO or x["icon_package"]==PATH_PYTHONLOGO) and x["icon_link_html"]!= "") else x["icon_package"], axis=1)
-        df2 = df2.drop(columns=['icon_package_link', 'icon_link_html'])
+        df2 = df2.drop(columns=['icon_link_html'])
     except:
         df2 = df_repos.copy()
     return df2

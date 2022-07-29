@@ -18,7 +18,7 @@ def get_icon_from_readme(df_readme: pd.DataFrame, df_repos: pd.DataFrame)-> pd.D
         df1["object.text"] = df1["object.text"].apply(lambda x: x.replace("'",'"'))
         df1["object.text"] = df1["object.text"].apply(lambda x: x.replace("\'",'"'))
         df1["object.text"] = df1["object.text"].apply(lambda x: x.replace("\"",'"'))
-        df1["icon_link_html"] = df1["object.text"].apply(lambda x:  re.search('<img src="(.*?)"', x[:300]).group(1) if (re.search('<img src="(.*?)"', x[:300])!=None) else "")
+        df1["icon_link_html"] = df1["object.text"].apply(lambda x:  re.search('<img src="(.*?)"', x[:2000]).group(1) if (re.search('<img src="(.*?)"', x[:2000])!=None) else "")
         #https://raw.githubusercontent.com/adibender/coalitions/HEAD/man/figures/logo.png
 
         df1["icon_link_html"] = df1.apply(lambda x: "https://raw.githubusercontent.com/"+x["full_name"]+"/HEAD/"+x["icon_link_html"] if ('https://' not in x["icon_link_html"] and x["icon_link_html"]!= '') else x["icon_link_html"], axis=1)

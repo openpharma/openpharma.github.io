@@ -46,9 +46,12 @@ library(pkgsearch)
   get_packages <- function(x) {ctv:::.get_pkgs_from_ctv_or_repos(views = x)[[1]]}
   
   ctv <- c(
-    get_packages("Bayesian"),get_packages("ClinicalTrials"),
-    get_packages("MissingData"),get_packages("CausalInference"),
-    get_packages("Survival"),get_packages("MetaAnalysis"),
+    get_packages("Bayesian"),
+    get_packages("ClinicalTrials"),
+    get_packages("MissingData"),
+    get_packages("CausalInference"),
+    get_packages("Survival"),
+    get_packages("MetaAnalysis"),
     get_packages("Pharmacokinetics")
   ) %>%
     cran_packages() %>%

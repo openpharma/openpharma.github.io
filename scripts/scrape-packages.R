@@ -49,7 +49,6 @@ library(pkgsearch)
     get_packages("Bayesian"),
     get_packages("ClinicalTrials"),
     get_packages("MissingData"),
-    get_packages("CausalInference"),
     get_packages("Survival")
   ) %>%
     cran_packages() %>%

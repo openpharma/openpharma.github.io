@@ -50,9 +50,7 @@ library(pkgsearch)
     get_packages("ClinicalTrials"),
     get_packages("MissingData"),
     get_packages("CausalInference"),
-    get_packages("Survival"),
-    get_packages("MetaAnalysis"),
-    get_packages("Pharmacokinetics")
+    get_packages("Survival")
   ) %>%
     cran_packages() %>%
     select(Package,URL,BugReports) %>%

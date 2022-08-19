@@ -44,9 +44,7 @@ library(pkgsearch)
   
 # ctv
   get_packages <- function(x) {ctv:::.get_pkgs_from_ctv_or_repos(views = x)[[1]]}
-  
-  
-  for
+
   
 
     

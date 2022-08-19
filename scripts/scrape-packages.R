@@ -45,12 +45,31 @@ library(pkgsearch)
 # ctv
   get_packages <- function(x) {ctv:::.get_pkgs_from_ctv_or_repos(views = x)[[1]]}
   
-  ctv <- c(
-    get_packages("Bayesian"),get_packages("ClinicalTrials"),
-    get_packages("MissingData"),get_packages("CausalInference"),
-    get_packages("Survival")
-  ) %>%
-    cran_packages() %>%
+  
+  for
+  
+
+    
+    
+    # REMOVED as API seems to not like big calls
+    # ctv <- c(
+    # get_packages("Bayesian"),get_packages("ClinicalTrials"),
+    # get_packages("MissingData"),get_packages("CausalInference"),
+    # get_packages("Survival")
+    # ) %>%
+    # cran_packages() %>%
+  
+  ctv <- NULL
+  for (i in c(
+    "Bayesian","ClinicalTrials","MissingData","CausalInference","Survival"
+  )) {
+    message(paste("getting ctv",i))
+    ctv <- bind_rows(
+      cran_packages(get_packages(i)),
+      ctv)
+  }
+    
+  ctv <- ctv %>%
     select(Package,URL,BugReports) %>%
     # try to fina a repo
     mutate(

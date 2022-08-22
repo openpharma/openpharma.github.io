@@ -309,4 +309,3 @@ library(GithubMetrics)
   write_rds(people,  glue("scratch/people-{Sys.Date()}.rds"))
   write_rds(help, glue("scratch/help-{Sys.Date()}.rds"))
   write_rds(commits, glue("scratch/commits-{Sys.Date()}.rds"))
-  

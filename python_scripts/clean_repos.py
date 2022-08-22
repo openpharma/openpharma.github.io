@@ -27,11 +27,12 @@ def clean_merge_df(path: str) -> tuple([pd.DataFrame, pd.DataFrame]):
     df['Contributors'] = df['Contributors'].fillna(0)
     df['Contributors'] = df['Contributors'].apply(lambda x: int(x))
     df['riskmetric_score_quintile'] = df['riskmetric_score_quintile'].fillna(0)
+    df['riskmetric_score'] = df['riskmetric_score'].fillna(0)
     df['os_health'] = df['os_health'].fillna(0)
     df['lang'] = df['lang'].fillna('R')
     df['cran_license'] = df['cran_license'].fillna('Other Licenses')
     df['license_clean'] = df['cran_license'].apply(clean_license)
-    df['risk_column'] = ((100-20*df['riskmetric_score_quintile'])+df['os_health'])/2
+    df['riskmetric_score'] = (100*df['riskmetric_score']).astype(int)
     df['last_commit_d'] = (pd.to_datetime("today") - pd.to_datetime(df['Last Commit'])).dt.days.astype('Int64')
     df['icon_package_link'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/Rlogo.svg"
     df.loc[df['lang'] == "python", 'icon_package_link'] = "https://openpharma.s3.us-east-2.amazonaws.com/streamlit_img/python.png"

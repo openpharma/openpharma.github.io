@@ -1,6 +1,9 @@
 import pandas as pd
 from typing import List
 from sklearn.preprocessing import MinMaxScaler
+from datetime import datetime, timedelta
+
+YEAR_RANGE = (datetime.today() - timedelta(days=365)).isoformat()
 
 
 def preproc_people(df_people: pd.DataFrame)-> pd.DataFrame:
@@ -20,6 +23,8 @@ def altruist_metric(df_people: pd.DataFrame, df_gh: pd.DataFrame)-> pd.DataFrame
         df_issues = df_issues.apply(lambda x: x.explode()).reset_index(drop=True)
         df_issues = df_issues.join(pd.json_normalize(df_issues['node.comments.nodes'])).drop(columns=['node.comments.nodes'])
         df_issues = df_issues.drop(columns=['author'])
+        # Filter one year
+        df_issues = df_issues[df_issues["node.createdAt"] >= YEAR_RANGE].reset_index(drop=True)
         #Merge with people csv list_repos post level and first comment level : df_gmh1-> post level ; df_gmh2 -> first comment level
         df_ghm1 = df_issues.merge(df_people[['author', 'repo_list']], how='left', left_on='node.author.login', right_on='author').drop(columns=['author'])
         df_ghm2 = df_issues.merge(df_people[['author', 'repo_list']], how='left', left_on='author.login', right_on='author').drop(columns=['author'])
@@ -64,6 +69,8 @@ def self_maintainer_metric(df_people: pd.DataFrame, df_gh: pd.DataFrame)-> pd.Da
         df_issues = df_issues.apply(lambda x: x.explode()).reset_index(drop=True)
         df_issues = df_issues.join(pd.json_normalize(df_issues['node.comments.nodes'])).drop(columns=['node.comments.nodes'])
         df_issues = df_issues.drop(columns=['author'])
+        # Filter one year
+        df_issues = df_issues[df_issues["node.createdAt"] >= YEAR_RANGE].reset_index(drop=True)
         #Merge with people csv list_repos post level and first comment level : df_gmh1-> post level ; df_gmh2 -> first comment level
         df_ghm1 = df_issues.merge(df_people[['author', 'repo_list']], how='left', left_on='node.author.login', right_on='author').drop(columns=['author'])
         df_ghm2 = df_issues.merge(df_people[['author', 'repo_list']], how='left', left_on='author.login', right_on='author').drop(columns=['author'])

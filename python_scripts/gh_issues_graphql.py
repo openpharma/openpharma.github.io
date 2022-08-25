@@ -82,6 +82,7 @@ def get_issues_content(ids_node_list: List[str])-> tuple([List[dict], List[dict]
                                 issues(first: 50, states: $status, orderBy: {field: UPDATED_AT, direction: DESC}) {
                                 edges{
                                     node{
+                                        createdAt
                                         title
                                         author{
                                             login

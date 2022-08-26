@@ -107,26 +107,41 @@ def self_maintainer_metric(df_people: pd.DataFrame, df_gh: pd.DataFrame)-> pd.Da
     return df_people
 
 
-def coder_metric(df_people: pd.DataFrame)->pd.DataFrame:
+def coder_metric(df_people: pd.DataFrame, df_commits: pd.DataFrame, scope: str)-> pd.DataFrame:
+    scaler = MinMaxScaler()
     df_pcopy = df_people.copy()
-    try:
-        scaler = MinMaxScaler()
-        df_pcopy[['contributed_to_metric', 'commits_metric']] = scaler.fit_transform(df_pcopy[['contributed_to', 'commits']])
-        df_pcopy['coder_metric'] = (df_pcopy['contributed_to_metric']+df_pcopy['commits_metric'])/2
-        df_pcopy[['coder_metric']] = scaler.fit_transform(df_pcopy[['coder_metric']])
-        df_pcopy[['coder_metric', 'contributed_to_metric', 'commits_metric']] = df_pcopy[['coder_metric', 'contributed_to_metric', 'commits_metric']].fillna(0)
-        df_pcopy['coder_metric'] = (100*df_pcopy['coder_metric']).astype(int)
-    except:
-        print("An exception occurred in coder metric function")
+    df_pcopy = df_pcopy.drop(columns=["contributed_to", "commits"])
+    # Filter for 12 months range
+    df_commits = df_commits[df_commits["datetime"] >= YEAR_RANGE].reset_index(drop=True)
+    # Filter for pharmaverse repos only
+    if scope == "pharmaverse":
+        PATH_PHARMAVERSE_PACKAGES = "scratch/pharmaverse_packages.csv"
+        df_pharmaverse = pd.read_csv(PATH_PHARMAVERSE_PACKAGES)
+        df_commits = df_commits[df_commits['full_name'].isin(df_pharmaverse['full_name'].to_list())].reset_index(drop=True)
+    # Count all occurences of project involvment (full_name) and sha (number of commits)
+    df_commits = df_commits.groupby(by="author", as_index=False).nunique()
+    # Merge with people
+    df_pcopy = df_pcopy.merge(df_commits[["author", "full_name", "sha"]], how='left', left_on='author', right_on='author')
+    df_pcopy = df_pcopy.rename(columns = {"full_name": "contributed_to", "sha": "commits"})
+    df_pcopy[["contributed_to", "commits"]] = df_pcopy[["contributed_to", "commits"]].fillna(0)
+
+    df_pcopy[["contributed_to_metric", "commits_metric"]] = scaler.fit_transform(df_pcopy[["contributed_to", "commits"]])
+    # Average of both
+    df_pcopy["coder_metric"] = (df_pcopy["contributed_to_metric"]+df_pcopy["commits_metric"])/2
+    #Scale coder metric
+    df_pcopy[["coder_metric"]] = scaler.fit_transform(df_pcopy[["coder_metric"]])
+    # Scale on 100
+    df_pcopy["coder_metric"] = (100*df_pcopy['coder_metric']).astype(int)
     return df_pcopy
 
 
-def main_overall_metric(path_people: str, path_gh_graphql: str):
+def main_overall_metric(path_people: str, path_gh_graphql: str, path_commits: str, scope: str)-> pd.DataFrame:
     df_people = pd.read_csv(path_people)
+    df_commits = pd.read_csv(path_commits)
     try:
         df_gh = pd.read_parquet(path_gh_graphql)
         df_people = preproc_people(df_people)
-        df_people = coder_metric(df_people=df_people)
+        df_people = coder_metric(df_people=df_people, df_commits=df_commits, scope=scope)
         df1 = self_maintainer_metric(df_people=df_people, df_gh=df_gh)
         df_people = df_people.merge(df1[["author", "self_maintainer_metric","#comments_self_maintainer", "#reactions_self_maintainer", "#first_comments_self_maintainer", "#m1_sm", "#m2_sm", "#m3_sm"]], how="left", on="author")
         df2 = altruist_metric(df_people=df_people, df_gh=df_gh)
@@ -137,44 +152,3 @@ def main_overall_metric(path_people: str, path_gh_graphql: str):
     except:
         print("An exception occurred into main_overall_metric function")
     return df_people
-
-
-
-"""
-Not really proper way of doing this
-"""
-def best_coder_pharmaverse(df1: pd.DataFrame, path_commit: str, path_pharma: str)-> pd.DataFrame:
-    df2 = pd.read_csv(path_commit)
-    df3 = pd.read_csv(path_pharma)
-    try:
-        df2 = df2[df2['full_name'].isin(df3['full_name'].to_list())][["full_name", "author", "commit_message"]]
-        df2 = df2.dropna(subset=['full_name'])
-        df2 = df2.dropna(subset=['author'])
-        df2 = df2.reset_index(drop=True)
-        # repos / author granularity
-        df2 = df2.groupby(["full_name", "author"]).count().reset_index()
-        # nb of project involved in
-        df2['contributed_to'] = df2.groupby(['author'])['full_name'].transform('count')
-        # sum of commit
-        df2["commits"] = df2.groupby(['author'])["commit_message"].transform('sum')
-        df2 = df2.drop_duplicates(subset=["author"]).reset_index(drop=True)
-
-        #Merge with people
-        df_final = df1.merge(df2[["author", "contributed_to", "commits"]], how='left', on='author')
-        df_final["commits"] = df_final["commits_y"]
-        df_final["contributed_to"] = df_final["contributed_to_y"]
-        df_final = df_final.drop(columns=['commits_x', 'commits_y', 'contributed_to_x', 'contributed_to_y'])
-        df_final[['commits', 'contributed_to']] = df_final[['commits', 'contributed_to']].fillna(0)
-        df_final["commits"] = df_final["commits"].astype(int)
-
-        scaler = MinMaxScaler()
-        df_final[['contributed_to_metric', 'commits_metric']] = scaler.fit_transform(df_final[['contributed_to', 'commits']])
-        df_final['coder_metric'] = (df_final['contributed_to_metric']+df_final['commits_metric'])/2
-        df_final[['coder_metric']] = scaler.fit_transform(df_final[['coder_metric']])
-        df_final[['coder_metric', 'contributed_to_metric', 'commits_metric']] = df_final[['coder_metric', 'contributed_to_metric', 'commits_metric']].fillna(0)
-        df_final['coder_metric'] = (100*df_final['coder_metric']).astype(int)
-        df_final["overall_metric"] = (df_final["coder_metric"]+df_final["self_maintainer_metric"]+df_final["altruist_metric"])/3
-        df_final["overall_metric"] = (100*MinMaxScaler().fit_transform(df_final[["overall_metric"]])).astype(int)
-    except:
-        print("An exception occurred in coder metric function")
-    return df_final

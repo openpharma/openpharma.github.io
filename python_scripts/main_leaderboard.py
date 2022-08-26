@@ -39,23 +39,19 @@ df_gh_leaderboard.to_parquet(PATH_GH_LEADERBOARD_PHARMAVERSE)
 #scope all contributors of packages
 df_people_clean = clean_leaderboard.main_overall_metric(
     path_people=PATH_PEOPLE,
-    path_gh_graphql=PATH_GH_LEADERBOARD
+    path_gh_graphql=PATH_GH_LEADERBOARD,
+    path_commits=PATH_COMMIT,
+    scope="all"
     )
 df_people_clean.to_csv(PATH_PEOPLE_CLEAN, index=False)
 
 #pharmaverse scope
 df_people_clean = clean_leaderboard.main_overall_metric(
     path_people=PATH_PEOPLE,
-    path_gh_graphql=PATH_GH_LEADERBOARD_PHARMAVERSE
+    path_gh_graphql=PATH_GH_LEADERBOARD_PHARMAVERSE,
+    path_commits=PATH_COMMIT,
+    scope = "pharmaverse"
     )
-
-#change the way of calculating best coder
-df_people_clean = clean_leaderboard.best_coder_pharmaverse(
-    df1=df_people_clean,
-    path_commit=PATH_COMMIT,
-    path_pharma=PATH_PHARMAVERSE_PACKAGES
-)
-#Additional function to recalculate commits and contrib on pharmaverse packages
 
 df_people_clean.to_csv(PATH_PEOPLE_CLEAN_PHARMAVERSE, index=False)
 

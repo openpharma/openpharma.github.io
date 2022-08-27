@@ -55,6 +55,9 @@ df_people_clean = clean_leaderboard.main_overall_metric(
 
 df_people_clean.to_csv(PATH_PEOPLE_CLEAN_PHARMAVERSE, index=False)
 
+
+
+
 """
 AWS client
 """
@@ -75,7 +78,6 @@ client.upload_file(Filename=PATH_GH_LEADERBOARD_PHARMAVERSE,
     Bucket='openpharma',
     Key='gh_leaderboard_pharmaverse.parquet'
 )
-
 
 """
 People clean data in csv format

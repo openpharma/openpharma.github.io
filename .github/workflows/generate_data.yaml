@@ -25,7 +25,7 @@ jobs:
         with:
           r-version: 'release'
 
-      - uses: r-lib/actions/setup-pandoc@master
+      - uses: r-lib/actions/setup-pandoc@v2
       
       - name: Cache packages
         uses: actions/cache@v1

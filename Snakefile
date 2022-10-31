@@ -138,14 +138,14 @@ rule generate_website:
         
 rule os_health:
     input: 
-        "os-activity.Rmd", 
+        "os-health.Rmd", 
         "scratch/repos.rds"
     output: 
-        report("os-activity.html")
+        report("os-health.html")
     shell: 
         """
         Rscript -e "rmarkdown::render(
-            'os-activity.Rmd', 
+            'os-health.Rmd', 
             output_dir = '.'
         )"
         """
@@ -154,7 +154,7 @@ rule os_health:
 rule all:
     input: 
         "index.html",
-        "os-activity.html",
+        "os-health.html",
         "scratch/contents.rds",
         "scratch/repos_clean.csv",
         "scratch/people_clean.csv",

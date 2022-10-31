@@ -66,47 +66,47 @@ badges <- repos %>%
         value = riskmetric_score
       ))
     ),
-    # health --------------
+    # Activity --------------
     badge_health = case_when(
       is.na(os_health) ~ as.character(glue(
         template, 
-        label = "OS Health",
+        label = "OS Activity",
         colour = "red",
         value = 0
       )),
       os_health > 90 ~ as.character(glue(
         template, 
-        label = "OS Health",
+        label = "OS Activity",
         colour = "brightgreen",
         value = os_health
       )),
       os_health > 80 ~ as.character(glue(
         template, 
-        label = "OS Health",
+        label = "OS Activity",
         colour = "green",
         value = os_health
       )),
       os_health > 60 ~ as.character(glue(
         template, 
-        label = "OS Health",
+        label = "OS Activity",
         colour = "yellowgreen",
         value = os_health
       )),
       os_health > 50 ~ as.character(glue(
         template, 
-        label = "OS Health",
+        label = "OS Activity",
         colour = "yellow",
         value = os_health
       )),
       os_health > 40 ~ as.character(glue(
         template, 
-        label = "OS Health",
+        label = "OS Activity",
         colour = "orange",
         value = os_health
       )),
       TRUE ~ as.character(glue(
         template, 
-        label = "OS Health",
+        label = "OS Activity",
         colour = "red",
         value = os_health
       ))

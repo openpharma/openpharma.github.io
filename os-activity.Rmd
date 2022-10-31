@@ -1,0 +1,39 @@
+---
+title: "OS Activity"
+author: "openpharma.github.io"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+## Context
+
+OS Activity measures active development of a package by looking at metrics such as median issue age or inactivity, contributor participation throughout the package repository lifespan, commit frequency and recency. It's important to not consider this as a metric of quality, but as part of your decision making process for using a package based on your needs.
+
+For example, some packages at a stable point are not updated frequently, as there is no required maintenance and no planned feature additions - but they are still robust, reliable packages. Furthermore, remember that data may not be perfect. Some packages are migrated to GitHub after internal development and git histories are not included, and in other cases GitHub data may simply be imperfect.
+
+
+```{r load, echo=FALSE, message=FALSE, warning=FALSE}
+library(readr)
+library(dplyr)
+  repos <- read_rds("scratch/repos.rds") %>% ungroup %>%
+    select(pretty_repo,os_health,warnings) %>% na.omit()
+```
+
+## Packages
+
+```{r health, echo=FALSE, results='asis'}
+for (i in 1:nrow(repos)){
+  cat(glue::glue("
+
+*{repos[i,]$pretty_repo}*
+    
+* Score is {repos[i,]$os_health}  
+{repos[i,]$warnings}
+    
+    
+  "))
+}
+```

@@ -123,6 +123,9 @@ openanalytics:
     lang: r
     type: tlg
 openpharma:
+  mmrm:
+    lang: r
+    type:
   DataFakeR:
     lang: r
     type: synthetic-data

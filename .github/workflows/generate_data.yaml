@@ -43,6 +43,7 @@ jobs:
 
       - name: Snakemake # python3 -m pip install --upgrade networkx pygraphvis
         run: |
+          python3 -m pip install --upgrade pip
           python3 -m pip install cython
           python3 -m pip install snakemake
           python3 -m pip install pandas==1.4.2

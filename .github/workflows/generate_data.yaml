@@ -10,7 +10,7 @@ name: build
 
 jobs:
   production:
-    runs-on: macOS-latest
+    runs-on: macos-12
     env:
       GITHUB_PAT: ${{ secrets.GH_OPENPHARMA }}
       RENV_PATHS_ROOT: ~/.local/share/renv
@@ -44,7 +44,8 @@ jobs:
       - name: Snakemake # python3 -m pip install --upgrade networkx pygraphvis
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install snakemake
+          python3 -m pip install cython>=0.29.33
+          python3 -m pip install snakemake==7.19.0
           python3 -m pip install pandas==1.4.2
           python3 -m pip install boto3==1.24.9
           python3 -m pip install requests==2.28

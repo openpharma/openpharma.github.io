@@ -10,7 +10,7 @@ name: build
 
 jobs:
   production:
-    runs-on: macos-11
+    runs-on: macos-latest
     env:
       GITHUB_PAT: ${{ secrets.GH_OPENPHARMA }}
       RENV_PATHS_ROOT: ~/.local/share/renv

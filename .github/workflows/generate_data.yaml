@@ -44,9 +44,9 @@ jobs:
       - name: Snakemake # python3 -m pip install --upgrade networkx pygraphvis
         run: |
           python3 -m pip cache purge
-          python3 -m pip uninstall setuptools
-          python3 -m pip uninstall wheel
-          python3 -m pip install --upgrade pip setuptools wheel
+          python3 -m pip install --upgrade pip
+          python3 -m pip uninstall -y setuptools
+          python3 -m pip uninstall -y wheel
           python3 -m pip install snakemake==7.19.0
           python3 -m pip install pandas==1.4.2
           python3 -m pip install boto3==1.24.9

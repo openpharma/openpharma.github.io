@@ -16,10 +16,10 @@ jobs:
       RENV_PATHS_ROOT: ~/.local/share/renv
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python 3.9 # Specify the right version of python
+      - name: Set up Python 3.10 # Specify the right version of python
         uses: actions/setup-python@v3
         with:
-          python-version: "3.9"
+          python-version: "3.10"
 
       - uses: r-lib/actions/setup-r@v2
         with:

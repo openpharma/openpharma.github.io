@@ -44,7 +44,6 @@ jobs:
       - name: Snakemake # python3 -m pip install --upgrade networkx pygraphvis
         run: |
           pip install virtualenv
-          sudo /usr/bin/easy_install virtualenv
           virtualenv my_env
           source my_env/bin/activate
           pip install --upgrade pip

@@ -43,21 +43,23 @@ jobs:
 
       - name: Snakemake # python3 -m pip install --upgrade networkx pygraphvis
         run: |
-          python3 -m pip cache purge
-          python3 -m pip install --upgrade pip
-          python3 -m pip uninstall -y setuptools
-          python3 -m pip uninstall -y wheel
-          python3 -m pip uninstall -y datrie
-          python3 -m pip install setuptools --no-cache-dir
-          python3 -m pip install wheel --no-cache-dir
-          python3 -m pip install datrie --no-cache-dir
-          python3 -m pip install snakemake==7.19.0
-          python3 -m pip install pandas==1.4.2
-          python3 -m pip install boto3==1.24.9
-          python3 -m pip install requests==2.28
-          python3 -m pip install PyYAML==3.13
-          python3 -m pip install scikit-learn==1.1.1
-          python3 -m pip install pyarrow
+          virtualenv my_env
+          source my_env/bin/activate
+          pip cache purge
+          pip install --upgrade pip
+          pip uninstall -y setuptools
+          pip uninstall -y wheel
+          pip uninstall -y datrie
+          pip install setuptools --no-cache-dir
+          pip install wheel --no-cache-dir
+          pip install datrie --no-cache-dir
+          pip install snakemake==7.19.0
+          pip install pandas==1.4.2
+          pip install boto3==1.24.9
+          pip install requests==2.28
+          pip install PyYAML==3.13
+          pip install scikit-learn==1.1.1
+          pip install pyarrow
 
 
 # IF develop

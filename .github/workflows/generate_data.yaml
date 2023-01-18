@@ -47,11 +47,7 @@ jobs:
           sudo /usr/bin/easy_install virtualenv
           virtualenv my_env
           source my_env/bin/activate
-          pip cache purge
           pip install --upgrade pip
-          pip uninstall -y setuptools
-          pip uninstall -y wheel
-          pip uninstall -y datrie
           pip install setuptools --no-cache-dir
           pip install wheel --no-cache-dir
           pip install datrie --no-cache-dir
@@ -59,7 +55,7 @@ jobs:
           pip install pandas==1.4.2
           pip install boto3==1.24.9
           pip install requests==2.28
-          pip install PyYAML==3.13
+          pip install PyYAML
           pip install scikit-learn==1.1.1
           pip install pyarrow
 

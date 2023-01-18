@@ -47,8 +47,10 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip uninstall -y setuptools
           python3 -m pip uninstall -y wheel
+          python3 -m pip uninstall -y datrie
           python3 -m pip install setuptools --no-cache-dir
           python3 -m pip install wheel --no-cache-dir
+          python3 -m pip install datrie --no-cache-dir
           python3 -m pip install snakemake==7.19.0
           python3 -m pip install pandas==1.4.2
           python3 -m pip install boto3==1.24.9

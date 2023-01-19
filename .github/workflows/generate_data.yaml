@@ -26,25 +26,9 @@ jobs:
           r-version: 'release'
 
       - uses: r-lib/actions/setup-pandoc@v2
-      
-      - name: Cache packages
-        uses: actions/cache@v1
-        with:
-          path: ${{ env.RENV_PATHS_ROOT }}
-          key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-renv-
-
-      - name: Restore packages
-        shell: Rscript {0}
-        run: |
-          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
-          renv::restore()
 
       - name: Snakemake # python3 -m pip install --upgrade networkx pygraphvis
         run: |
-          brew uninstall --ignore-dependencies gfortran
-          brew install gcc || brew link --overwrite gcc
           pip install virtualenv
           virtualenv my_env
           source my_env/bin/activate

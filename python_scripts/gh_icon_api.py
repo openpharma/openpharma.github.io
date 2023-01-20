@@ -24,7 +24,7 @@ def get_icon_package_gh_api(path: str=GITHUB_URL_ICON):
         l_icon = []
         print("Breakpoint")
         for x in json_packages:
-            yaml_file = yaml.load(requests.get(x, auth=(AUTH_NAME, OPENPHARMA_PAT)).text)
+            yaml_file = yaml.load(requests.get(x, auth=(AUTH_NAME, OPENPHARMA_PAT)).text, Loader=yaml.FullLoader)
             if (yaml_file['repo'] != None and yaml_file['hex'] != None):
                 l_repo.append(yaml_file['repo'])
                 l_icon.append(yaml_file['hex'])

@@ -158,6 +158,15 @@ pharmaverse:
   admiral:
     lang: r
     type: 
+  admiralonco:
+    lang: r
+    type: 
+  admiralophtha:
+    lang: r
+    type: 
+  admiralvaccine:
+    lang: r
+    type: 
   datacutr:
     lang: r
     type: 
@@ -170,6 +179,12 @@ pharmaverse:
   metatools:
     lang: r
     type: 
+  sdtmchecks:
+    lang: r
+    type: 
+  tidytlg:
+    lang: r
+    type: tlg
 pharmaR:
   riskmetric:
     lang: r
@@ -216,4 +231,7 @@ UCL:
     lang: r
     type: 
       - clinical-statistics
-
+Biogen-Inc:
+  tidyCDISC:
+    lang: r
+    type: tlg

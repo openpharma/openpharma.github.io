@@ -4,6 +4,7 @@ import requests
 import yaml
 import pandas as pd
 from typing import List
+import time
 
 GITHUB_URL_ICON = 'https://api.github.com/repos/pharmaverse/pharmaverse/contents/data/packages'
 OPENPHARMA_PAT = os.getenv('OPENPHARMA_PAT')
@@ -108,7 +109,7 @@ def get_issues_content(ids_node_list: List[str])-> tuple([List[dict], List[dict]
                             }
                             }"""
                 #OPEN ISSUES
-                
+                time.sleep(15)
                 variables1 = {'list_ids': ids_node_list_divided[i], 'status': 'OPEN'}
                 response1 = requests.post(
                     url=PATH_GRAPHQL_API,
@@ -116,6 +117,7 @@ def get_issues_content(ids_node_list: List[str])-> tuple([List[dict], List[dict]
                     auth=(AUTH_NAME, OPENPHARMA_PAT)
                 )
                 #CLOSED ISSUES
+                time.sleep(15)
                 variables2 = {'list_ids': ids_node_list_divided[i], 'status': 'CLOSED'}
                 response2 = requests.post(
                     url=PATH_GRAPHQL_API, 

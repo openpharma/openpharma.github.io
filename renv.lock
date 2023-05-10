@@ -52,13 +52,6 @@
       "RemoteSha": "0c60884923855e6b1f6b25e923212094e218662e",
       "Hash": "b66f33c6bbe7ad2600eca79a6290b441"
     },
-    "MASS": {
-      "Package": "MASS",
-      "Version": "7.3-57",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "71476c1d88d1ebdf31580e5a257d5d31"
-    },
     "Matrix": {
       "Package": "Matrix",
       "Version": "1.3-4",

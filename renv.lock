@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.3.0",
+    "Version": "4.1.0",
     "Repositories": [
       {
         "Name": "BioCsoft",
@@ -29,7 +29,7 @@
     ]
   },
   "Bioconductor": {
-    "Version": "3.17"
+    "Version": "3.14"
   },
   "Packages": {
     "BiocManager": {
@@ -720,14 +720,19 @@
     "fontawesome": {
       "Package": "fontawesome",
       "Version": "0.5.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteUsername": "rstudio",
+      "RemoteRepo": "fontawesome",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "1773f6f0cea39dab26f6abb36dfac6d64af41742",
+      "RemoteHost": "api.github.com",
       "Requirements": [
         "R",
         "htmltools",
         "rlang"
       ],
-      "Hash": "1e22b8cabbad1eae951a75e9f8b52378"
+      "Hash": "d29e3d1e8ca4aceb9de672e8057383d6"
     },
     "fs": {
       "Package": "fs",
@@ -947,7 +952,7 @@
     },
     "httpuv": {
       "Package": "httpuv",
-      "Version": "1.6.11",
+      "Version": "1.6.10",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -958,7 +963,7 @@
         "promises",
         "utils"
       ],
-      "Hash": "838602f54e32c1a0f8cc80708cefcefa"
+      "Hash": "503490b202c9ae28e7f58b9b5ae21d9f"
     },
     "httr": {
       "Package": "httr",
@@ -1635,8 +1640,13 @@
     "riskmetric": {
       "Package": "riskmetric",
       "Version": "0.2.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteUsername": "pharmaR",
+      "RemoteRepo": "riskmetric",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "cf0b3b013a1b541c7c2ebaa9f9672a2f273c352d",
+      "RemoteHost": "api.github.com",
       "Requirements": [
         "BiocManager",
         "backports",
@@ -1655,7 +1665,7 @@
         "vctrs",
         "xml2"
       ],
-      "Hash": "63d8b05e7e3b1e8266f3680b13a74ce6"
+      "Hash": "ad5912c8474736bbb7faec5338eff56a"
     },
     "rlang": {
       "Package": "rlang",
@@ -2037,14 +2047,14 @@
     },
     "tzdb": {
       "Package": "tzdb",
-      "Version": "0.4.0",
+      "Version": "0.3.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "cpp11"
       ],
-      "Hash": "f561504ec2897f4d46f0c7657e488ae1"
+      "Hash": "b2e1cbce7c903eaf23ec05c58e59fb5e"
     },
     "urlchecker": {
       "Package": "urlchecker",

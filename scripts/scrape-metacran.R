@@ -4,7 +4,7 @@ library(pkgsearch)
 
 ## Load data
 
-data <- read_rds("scratch/yamL_repos.rds")
+data <- read_rds("scratch/yaml_repos.rds")
 
 ## Filter data
 data %>%

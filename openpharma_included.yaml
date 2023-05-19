@@ -101,8 +101,11 @@ Merck:
     lang: r
     type: 
       - clinical-statistics
-nlmixrdevelopment:
-  nlmixr:
+nlmixr2:
+  nlmixr2:
+    lang: r
+    type: pkpd
+  rxode2:
     lang: r
     type: pkpd
 Novartis:
@@ -179,6 +182,11 @@ pharmaverse:
   metatools:
     lang: r
     type: 
+  tidytlg:
+    lang: r
+    type: 
+      - filing-tools
+      - tlg
   sdtmchecks:
     lang: r
     type: 

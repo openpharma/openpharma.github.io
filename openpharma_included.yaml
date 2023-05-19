@@ -101,8 +101,11 @@ Merck:
     lang: r
     type: 
       - clinical-statistics
-nlmixrdevelopment:
-  nlmixr:
+nlmixr2:
+  nlmixr2:
+    lang: r
+    type: pkpd
+  rxode2:
     lang: r
     type: pkpd
 Novartis:

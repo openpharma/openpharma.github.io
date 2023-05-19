@@ -59,7 +59,7 @@ library(pkgsearch)
   
   ctv <- NULL
   for (i in c(
-    "Bayesian","ClinicalTrials","MissingData","CausalInference","Survival"
+    "Bayesian","ClinicalTrials","MissingData","CausalInference","Survival","MetaAnalysis","Pharmacokinetics"
   )) {
     message(paste("getting ctv",i))
     ctv <- bind_rows(

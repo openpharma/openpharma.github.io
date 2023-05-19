@@ -1,5 +1,6 @@
 # openpharma.github.io
 
+
 Further precompetitive collaboration in life science area.
 
 Website at: openpharma.github.io
@@ -24,4 +25,6 @@ Optionally, you can add metadata as well at the bottom of the yaml.
 
 See gh-actions for build.
 
+# Data scraping pipeline
 
+<img width="865" alt="Screenshot 2022-09-19 at 16 06 33" src="https://user-images.githubusercontent.com/49449000/191036611-75ad2582-dc93-4bb2-9981-6e2390728a27.png">

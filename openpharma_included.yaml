@@ -44,6 +44,10 @@ GSK-Biostatistics:
   neointerface:
     lang: python
     type: filing-tools
+  tfrmt:
+    lang: r
+    type: 
+      - tlg
   tlang:
     lang: r
     type: 
@@ -119,6 +123,9 @@ openanalytics:
     lang: r
     type: tlg
 openpharma:
+  mmrm:
+    lang: r
+    type:
   DataFakeR:
     lang: r
     type: synthetic-data
@@ -151,12 +158,33 @@ pharmaverse:
   admiral:
     lang: r
     type: 
+  admiralonco:
+    lang: r
+    type: 
+  admiralophtha:
+    lang: r
+    type: 
+  admiralvaccine:
+    lang: r
+    type: 
+  datacutr:
+    lang: r
+    type: 
   end_to_end_examples:
     lang: r
     type:
+  envsetup:
+    lang: r
+    type: filing-tools
   metatools:
     lang: r
     type: 
+  sdtmchecks:
+    lang: r
+    type: 
+  tidytlg:
+    lang: r
+    type: tlg
 pharmaR:
   riskmetric:
     lang: r
@@ -203,4 +231,7 @@ UCL:
     lang: r
     type: 
       - clinical-statistics
-
+Biogen-Inc:
+  tidyCDISC:
+    lang: r
+    type: tlg

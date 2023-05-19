@@ -10,7 +10,7 @@ name: build
 
 jobs:
   production:
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GH_OPENPHARMA }}
     steps:

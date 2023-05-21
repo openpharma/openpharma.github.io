@@ -182,11 +182,6 @@ pharmaverse:
   metatools:
     lang: r
     type: 
-  tidytlg:
-    lang: r
-    type: 
-      - filing-tools
-      - tlg
   sdtmchecks:
     lang: r
     type: 

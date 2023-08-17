@@ -188,10 +188,16 @@ pharmaverse:
   tidytlg:
     lang: r
     type: tlg
+  ggsurvfit:
+    lang: r
+    task: tlg
 pharmaR:
   riskmetric:
     lang: r
     type: filing-tools
+  riskassessment:
+    lang: r
+    type: validation
 phuse-org:
   aesummaries:
     lang: r
@@ -210,6 +216,8 @@ Roche:
     type:
       - filing-tools
       - tlg
+  diffdf:
+    lang: r
   respectables:
     lang: r
     type: synthetic-data

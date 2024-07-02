@@ -5,6 +5,7 @@ on:
     branches:
       - master  # Set a branch to deploy
       - develop # Note has logic around deployment
+      - fix-pipeline
 
 name: build
 
